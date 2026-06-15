@@ -1,0 +1,33 @@
+
+version: '3.8'
+services:
+  frontend:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgres://admin:secret@db:5432/allergynet
+      - JWT_SECRET=change_me_to_a_long_random_string
+      - PRODAMUS_KEY=your_key
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=allergynet
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:

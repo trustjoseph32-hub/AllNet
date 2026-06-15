@@ -1,0 +1,8 @@
+{
+  "name": "Remix: AllergyNet: АллергииНет",
+  "description": "Комплексная система управления обучением для курса \u0027Психосоматика аллергии\u0027, включающая видеоуроки, отслеживание симптомов, геймификацию и поддержку ИИ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
