@@ -12,11 +12,11 @@ export const Services: React.FC = () => {
 
   const getProductIcon = (type: ProductType) => {
       switch (type) {
-          case 'interactive_test': return <Zap className="w-6 h-6 text-yellow-500" />;
+          case 'interactive_test': return <Zap className="w-6 h-6 text-indigo-500" />;
           case 'course_standard': return <Lock className="w-6 h-6 text-green-500" />;
           case 'therapy_block': return <Clock className="w-6 h-6 text-blue-500" />;
           case 'single_session': return <Calendar className="w-6 h-6 text-purple-500" />;
-          case 'audio_pack': return <Headphones className="w-6 h-6 text-pink-500" />;
+          case 'audio_pack': return <Headphones className="w-6 h-6 text-cyan-500" />;
           default: return <Lock className="w-6 h-6" />;
       }
   };

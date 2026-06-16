@@ -28,8 +28,7 @@ export const Dashboard: React.FC = () => {
     });
   };
 
-  // State for selected roadmap step
-  const [activeRoadmapStep, setActiveRoadmapStep] = useState<number>(0);
+
 
   // Calculate academic stats
   const totalLessons = lessons.length;
@@ -66,44 +65,7 @@ export const Dashboard: React.FC = () => {
     }
   ];
 
-  // Roadmap details of AllergyNet Eco-system
-  const ecosystemRoadmap = [
-    {
-       title: "1. Экспресс-Диагностика",
-       tag: "Вход и Тестирование",
-       desc: "Аналитическое исследование симптоматики и психосоматических триггеров. Интеграция опросника на 120 клинических вопросов для выявления подавленных эмоций, влияющих на воспалительные процессы.",
-       status: user?.diagnosticsStatus === 'completed' ? 'Изучено' : 'В процессе',
-       color: "from-cyan-500 to-blue-500"
-    },
-    {
-       title: "2. Образовательная академия",
-       tag: "Нейрофизиология и уроки",
-       desc: "Пошаговый курс из интерактивных видеолекций с квиз-тестами и заданиями. Вы обучаетесь распознавать и гасить очаги хронического напряжения в коре больших полушарий головного мозга.",
-       status: completedLessons > 0 ? 'Изучено' : 'Открыть',
-       color: "from-purple-500 to-indigo-500"
-    },
-    {
-       title: "3. Био-Мониторинг состояний",
-       tag: "Дневник психосоматики",
-       desc: "Ежедневная экологичная фиксация симптомов, уровня стресса, пищевых триггеров и психологических инсайтов. Позволяет верифицировать взаимосвязь состояния нервной системы и кожных/астматических реакций.",
-       status: diaryEntries.length > 0 ? 'Активно' : 'Начать',
-       color: "from-emerald-500 to-teal-500"
-    },
-    {
-       title: "4. Нутрициологическая коррекция",
-       tag: "Иммуношеф Нутрициология",
-       desc: "Антивоспалительный протокол питания, регулирующий выработку гистамина и поддерживающий систему детоксикации печени и кишечника через индивидуальные рекомендации ИИ.",
-       status: 'Активно',
-       color: "from-amber-500 to-orange-500"
-    },
-    {
-       title: "5. Интегративная Ремиссия",
-       tag: "Свобода от аллергии!",
-       desc: "Слияние биологической защиты и психотехнологий. Выход на стойкую безмедикаментозную ремиссию через восстановление иммунной толерантности.",
-       status: 'Цель',
-       color: "from-rose-500 to-pink-500"
-    }
-  ];
+
 
   return (
     <div className="space-y-10 animate-fade-in text-white pb-20">
@@ -162,7 +124,7 @@ export const Dashboard: React.FC = () => {
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between">
                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Эмоции</span>
                 <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-xl font-black text-indigo-500">{averageEmotion}</span>
+                  <span className="text-xl font-black text-teal-500">{averageEmotion}</span>
                   <span className="text-[10px] text-slate-400 font-bold">/10</span>
                 </div>
               </div>
@@ -170,7 +132,7 @@ export const Dashboard: React.FC = () => {
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between">
                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Тело</span>
                 <div className="flex items-baseline gap-1.5 mt-2">
-                  <span className="text-xl font-black text-rose-500">{averageSymptom}</span>
+                  <span className="text-xl font-black text-indigo-500">{averageSymptom}</span>
                   <span className="text-[10px] text-slate-400 font-bold">/10</span>
                 </div>
               </div>
@@ -198,10 +160,10 @@ export const Dashboard: React.FC = () => {
           <div className="glass-card p-6 relative overflow-hidden">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <span className="text-[10px] font-black tracking-widest text-[#a855f7] uppercase">ПЛАН ДЕЙСТВИЙ</span>
+                <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase">ПЛАН ДЕЙСТВИЙ</span>
                 <h3 className="text-xl font-black mt-1 text-white">Рекомендованные задания на сегодня</h3>
               </div>
-              <ClipboardList className="w-5 h-5 text-purple-400" />
+              <ClipboardList className="w-5 h-5 text-teal-400" />
             </div>
             
             <p className="text-xs text-gray-400 mb-6 font-light leading-relaxed">
@@ -214,14 +176,14 @@ export const Dashboard: React.FC = () => {
                 onClick={() => toggleTask('diary')}
                 className={`flex gap-4 p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 items-start
                   ${completedTasks.diary 
-                    ? 'bg-purple-950/15 border-purple-500/30 text-gray-400' 
+                    ? 'bg-teal-950/15 border-teal-500/30 text-gray-400' 
                     : 'bg-[#120a2c]/40 border-white/5 text-white hover:border-white/10 hover:bg-[#120a2c]/60'}`}
               >
                 <div className="pt-0.5">
                   {completedTasks.diary ? (
-                    <CheckCircle2 className="w-5 h-5 text-purple-400" />
+                    <CheckCircle2 className="w-5 h-5 text-teal-400" />
                   ) : (
-                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-purple-500 flex items-center justify-center transition-all"></div>
+                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-teal-500 flex items-center justify-center transition-all"></div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -240,14 +202,14 @@ export const Dashboard: React.FC = () => {
                 onClick={() => toggleTask('lesson')}
                 className={`flex gap-4 p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 items-start
                   ${completedTasks.lesson 
-                    ? 'bg-purple-950/15 border-purple-500/30 text-gray-400' 
+                    ? 'bg-teal-950/15 border-teal-500/30 text-gray-400' 
                     : 'bg-[#120a2c]/40 border-white/5 text-white hover:border-white/10 hover:bg-[#120a2c]/60'}`}
               >
                 <div className="pt-0.5">
                   {completedTasks.lesson ? (
-                    <CheckCircle2 className="w-5 h-5 text-purple-400" />
+                    <CheckCircle2 className="w-5 h-5 text-teal-400" />
                   ) : (
-                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-purple-500 flex items-center justify-center transition-all"></div>
+                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-teal-500 flex items-center justify-center transition-all"></div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -256,7 +218,7 @@ export const Dashboard: React.FC = () => {
                 </div>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setView(ViewState.LESSONS); }}
-                  className="px-2.5 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 text-[10px] font-bold rounded-lg uppercase tracking-wide shrink-0 ml-2"
+                  className="px-2.5 py-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/20 text-[10px] font-bold rounded-lg uppercase tracking-wide shrink-0 ml-2"
                 >
                   Уроки
                 </button>
@@ -266,14 +228,14 @@ export const Dashboard: React.FC = () => {
                 onClick={() => toggleTask('breathing')}
                 className={`flex gap-4 p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 items-start
                   ${completedTasks.breathing 
-                    ? 'bg-purple-950/15 border-purple-500/30 text-gray-400' 
+                    ? 'bg-teal-950/15 border-teal-500/30 text-gray-400' 
                     : 'bg-[#120a2c]/40 border-white/5 text-white hover:border-white/10 hover:bg-[#120a2c]/60'}`}
               >
                 <div className="pt-0.5">
                   {completedTasks.breathing ? (
-                    <CheckCircle2 className="w-5 h-5 text-purple-400" />
+                    <CheckCircle2 className="w-5 h-5 text-teal-400" />
                   ) : (
-                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-purple-500 flex items-center justify-center transition-all"></div>
+                    <div className="w-5 h-5 rounded-md border border-white/20 hover:border-teal-500 flex items-center justify-center transition-all"></div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -282,7 +244,7 @@ export const Dashboard: React.FC = () => {
                 </div>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setView(ViewState.AI_CHAT); }}
-                  className="px-2.5 py-1.5 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/20 text-[10px] font-bold rounded-lg uppercase tracking-wide shrink-0 ml-2"
+                  className="px-2.5 py-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/20 text-[10px] font-bold rounded-lg uppercase tracking-wide shrink-0 ml-2"
                 >
                   Задать вопрос
                 </button>
@@ -313,17 +275,17 @@ export const Dashboard: React.FC = () => {
                   className={`p-4 rounded-xl border flex flex-col justify-between transition-all duration-300 relative overflow-hidden group 
                     ${lesson.isLocked 
                       ? 'bg-[#120a2c]/20 border-white/5 opacity-50 cursor-not-allowed' 
-                      : 'bg-[#120a2c]/40 border-white/10 hover:border-purple-500/30 hover:bg-[#120a2c]/60 cursor-pointer'}`}
+                      : 'bg-[#120a2c]/40 border-white/10 hover:border-teal-500/30 hover:bg-[#120a2c]/60 cursor-pointer'}`}
                 >
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-[9px] px-2 py-0.5 bg-purple-500/15 border border-purple-500/20 rounded text-purple-400 font-bold uppercase tracking-wider">
+                      <span className="text-[9px] px-2 py-0.5 bg-teal-500/15 border border-teal-500/20 rounded text-teal-400 font-bold uppercase tracking-wider">
                         Блок {lesson.blockId}
                       </span>
                       <span className="text-[9px] text-gray-500 font-mono font-bold uppercase">{lesson.durationMinutes} минут</span>
                     </div>
 
-                    <h4 className="font-bold text-xs text-white leading-snug group-hover:text-purple-300 transition-colors pt-1">
+                    <h4 className="font-bold text-xs text-white leading-snug group-hover:text-teal-300 transition-colors pt-1">
                       {lesson.title}
                     </h4>
                     <p className="text-[11px] text-gray-400 line-clamp-2 leading-relaxed">
@@ -333,13 +295,13 @@ export const Dashboard: React.FC = () => {
 
                   <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
                     {lesson.isCompleted ? (
-                      <span className="text-[10px] text-emerald-400 font-black uppercase flex items-center gap-1.5">
+                      <span className="text-[10px] text-teal-400 font-black uppercase flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Пройдено
                       </span>
                     ) : lesson.isLocked ? (
                       <span className="text-[10px] text-gray-500 font-bold uppercase">Заблокировано</span>
                     ) : (
-                      <span className="text-[10px] text-purple-400 font-black uppercase group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                      <span className="text-[10px] text-teal-400 font-black uppercase group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                         Начать <ArrowRight className="w-3 h-3" />
                       </span>
                     )}
@@ -351,7 +313,7 @@ export const Dashboard: React.FC = () => {
             <div className="mt-5 text-center">
               <button 
                 onClick={() => setView(ViewState.LESSONS)}
-                className="text-xs font-black uppercase text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1.5 mx-auto"
+                className="text-xs font-black uppercase text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-1.5 mx-auto"
               >
                 Открыть всю учебную программу <ArrowRight className="w-3.5 h-3.5" />
               </button>
@@ -364,14 +326,14 @@ export const Dashboard: React.FC = () => {
           
           {/* ANTI-INFLAMMATORY IMMUNOCHEF RECOMMENDATIONS CARD */}
           <div className="glass-card p-6 relative overflow-hidden text-white">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-[60px] pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-[60px] pointer-events-none"></div>
             
             <div className="flex justify-between items-center mb-4">
               <div>
-                <span className="text-[10px] font-black tracking-widest text-[#f59e0b] uppercase">ПИТАНИЕ И БИОХИМИЯ</span>
+                <span className="text-[10px] font-black tracking-widest text-[#0ca3be] uppercase">ПИТАНИЕ И БИОХИМИЯ</span>
                 <h3 className="text-xl font-black mt-1 text-white">Терапевтический рацион</h3>
               </div>
-              <ChefHat className="w-5 h-5 text-amber-500" />
+              <ChefHat className="w-5 h-5 text-teal-400" />
             </div>
 
             <p className="text-xs text-gray-400 mb-5 leading-relaxed font-light">
@@ -382,13 +344,13 @@ export const Dashboard: React.FC = () => {
               {antiInflammatoryRecipes.map((recipe, index) => (
                 <div key={index} className="bg-[#120a2c]/50 p-4 border border-white/5 rounded-xl space-y-2">
                   <div className="flex justify-between items-start gap-2">
-                    <span className="text-[8px] px-2 py-0.5 bg-yellow-400/10 border border-yellow-400/20 text-yellow-500 font-bold uppercase tracking-wider rounded">
+                    <span className="text-[8px] px-2 py-0.5 bg-teal-400/10 border border-teal-400/20 text-teal-500 font-bold uppercase tracking-wider rounded">
                       {recipe.tag}
                     </span>
                     <span className="text-[10px] text-gray-500 font-mono font-medium shrink-0">{recipe.time}</span>
                   </div>
 
-                  <h4 className="font-bold text-sm text-yellow-500 leading-tight">
+                  <h4 className="font-bold text-sm text-teal-500 leading-tight">
                     {recipe.title}
                   </h4>
                   
@@ -416,71 +378,14 @@ export const Dashboard: React.FC = () => {
             <div className="mt-5 text-center">
               <button 
                 onClick={() => setView(ViewState.NUTRITION)}
-                className="w-full py-2.5 bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/20 text-amber-500 rounded-xl text-xs font-black uppercase tracking-wider transition-all transform active:scale-95"
+                className="w-full py-2.5 bg-teal-500/10 hover:bg-teal-500/15 border border-teal-500/20 text-teal-500 rounded-xl text-xs font-black uppercase tracking-wider transition-all transform active:scale-95"
               >
                 Открыть ImmunoChef AI
               </button>
             </div>
           </div>
 
-          {/* INTERACTIVE CLUB ROADMAP CARD */}
-          <div className="glass-card p-6 relative overflow-hidden">
-            <div className="flex justify-between items-center mb-5">
-              <div>
-                <span className="text-[10px] font-black tracking-widest text-[#ec4899] uppercase">КАРТА ПРОЕКТА</span>
-                <h3 className="text-xl font-black mt-1 text-white">Дорожная карта AllergyNet</h3>
-              </div>
-              <Milestone className="w-5 h-5 text-pink-500" />
-            </div>
 
-            <p className="text-xs text-gray-400 mb-5 leading-relaxed font-light">
-              Целостный концепт нашей немедикаментозной экосистемы. Пройдите все этапы для устойчивого восстановления иммунной регуляции:
-            </p>
-
-            <div className="space-y-2">
-              {ecosystemRoadmap.map((step, idx) => {
-                const isActive = activeRoadmapStep === idx;
-                return (
-                  <div 
-                    key={idx}
-                    onClick={() => setActiveRoadmapStep(idx)}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left relative overflow-hidden group
-                    ${isActive 
-                      ? 'bg-[#120a2c] border-purple-500/30 shadow-[0_4px_25px_rgba(168,85,247,0.1)]' 
-                      : 'bg-[#120a2c]/30 border-white/5 hover:border-white/10'}`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full bg-gradient-to-tr ${step.color} shadow-lg`} />
-                        <span className={`text-xs font-bold leading-none ${isActive ? 'text-white' : 'text-gray-300'}`}>
-                          {step.title}
-                        </span>
-                      </div>
-                      
-                      <span className={`text-[9px] font-mono font-bold uppercase rounded px-1.5 py-0.5 leading-none border
-                        ${step.status === 'Изучено' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : ''}
-                        ${step.status === 'В процессе' ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400 animate-pulse' : ''}
-                        ${step.status === 'Активно' ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' : ''}
-                        ${step.status === 'Цель' ? 'bg-pink-500/10 border-pink-500/20 text-pink-400' : ''}
-                        ${step.status === 'Открыть' ? 'bg-purple-500/10 border-purple-500/20 text-purple-400' : ''}
-                      `}>
-                        {step.status}
-                      </span>
-                    </div>
-
-                    {isActive && (
-                      <div className="mt-3 text-xs text-gray-300 leading-relaxed font-light pl-5 animate-fade-in space-y-1.5">
-                        <div className="text-[10px] text-gray-400 uppercase font-mono font-bold tracking-wider">
-                          Раздел: {step.tag}
-                        </div>
-                        <p>{step.desc}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
 
         </div>
 

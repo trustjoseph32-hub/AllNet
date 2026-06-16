@@ -34,7 +34,7 @@ export const LessonView: React.FC = () => {
   };
 
   const daysSinceJoining = getDaysSinceJoining();
-  const userCurrentWeek = Math.min(4, Math.max(1, Math.ceil(daysSinceJoining / 7)));
+  const userCurrentWeek = Math.min(8, Math.max(1, Math.ceil(daysSinceJoining / 7)));
 
   // Group lessons by weekNumber
   const getLessonsForWeek = (week: number) => {
@@ -51,11 +51,11 @@ export const LessonView: React.FC = () => {
         
         {/* Weekly Header Banner */}
         <div className="relative glass-card p-6 md:p-8 overflow-hidden rounded-3xl">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-80 h-80 bg-teal-600/10 rounded-full blur-[100px] pointer-events-none"></div>
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
             <div>
-              <div className="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-[0.25em] mb-2.5">
+              <div className="flex items-center gap-2 text-teal-400 font-bold text-xs uppercase tracking-[0.25em] mb-2.5">
                 <Sparkles className="w-4.5 h-4.5 animate-pulse" /> Расписание уроков AllergyNet
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight">Терапевтическая Программа</h1>
@@ -66,11 +66,11 @@ export const LessonView: React.FC = () => {
 
             <div className="bg-[#120a2c] border border-white/10 px-5 py-3.5 rounded-2xl shrink-0 min-w-[200px] text-center md:text-right">
               <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest block mb-1">ОБЩИЙ ПРОГРЕСС КУРСА</span>
-              <span className="text-2xl font-black text-purple-400">{completedLessonsCount} / {totalLessonsCount}</span>
+              <span className="text-2xl font-black text-teal-400">{completedLessonsCount} / {totalLessonsCount}</span>
               <span className="text-xs text-gray-400 font-bold ml-1.5 font-mono">завершено</span>
               <div className="w-full bg-white/5 h-1.5 rounded-full mt-2.5 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-teal-500 to-teal-500 h-full rounded-full transition-all duration-500"
                   style={{ width: `${totalLessonsCount > 0 ? (completedLessonsCount / totalLessonsCount) * 100 : 0}%` }}
                 ></div>
               </div>
@@ -78,9 +78,9 @@ export const LessonView: React.FC = () => {
           </div>
         </div>
 
-        {/* 4-WEEK CALENDAR / SCHEDULE SELECTION TABS */}
+        {/* 8-WEEK CALENDAR / SCHEDULE SELECTION TABS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map((week) => {
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((week) => {
             const isSelected = selectedWeek === week;
             const isUserWeek = userCurrentWeek === week;
             const isLocked = week > userCurrentWeek && user.role !== 'admin' && user.role !== 'super_admin';
@@ -88,14 +88,16 @@ export const LessonView: React.FC = () => {
             return (
               <button
                 key={week}
-                onClick={() => setSelectedWeek(week)}
+                onClick={() => { if (!isLocked) setSelectedWeek(week); }}
                 className={`p-4 rounded-2xl border transition-all relative overflow-hidden group select-none text-left
                   ${isSelected 
-                    ? 'bg-purple-950/20 border-purple-500/50 shadow-[0_4px_25px_rgba(168,85,247,0.1)]' 
-                    : 'bg-[#120a2c]/50 border-white/10 hover:border-white/20'}`}
+                    ? 'bg-teal-950/20 border-teal-500/50 shadow-[0_4px_25px_rgba(20,184,166,0.1)]' 
+                    : isLocked
+                      ? 'bg-[#120a2c]/20 border-white/5 opacity-50 cursor-not-allowed'
+                      : 'bg-[#120a2c]/50 border-white/10 hover:border-white/20'}`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <span className={`text-xs font-black uppercase tracking-widest ${isSelected ? 'text-purple-400' : 'text-gray-400'}`}>
+                  <span className={`text-xs font-black uppercase tracking-widest ${isSelected ? 'text-teal-400' : 'text-gray-400'}`}>
                     Неделя {week}
                   </span>
                   {isUserWeek && (
@@ -108,22 +110,30 @@ export const LessonView: React.FC = () => {
                   )}
                 </div>
 
-                <h4 className="font-extrabold text-sm text-white group-hover:text-purple-300 transition-colors">
+                <h4 className="font-extrabold text-sm text-white group-hover:text-teal-300 transition-colors">
                   {week === 1 && "Диагностика и Код"}
                   {week === 2 && "Стирание Триггеров"}
                   {week === 3 && "Границы и Иммунитет"}
-                  {week === 4 && "Полная Ремиссия"}
+                  {week === 4 && "Работа с телом"}
+                  {week === 5 && "Эмоциональная опора"}
+                  {week === 6 && "Нейропластичность"}
+                  {week === 7 && "Закрепление"}
+                  {week === 8 && "Полная Ремиссия"}
                 </h4>
 
                 <p className="text-[10px] text-gray-400 font-medium leading-relaxed mt-1.5 transition-colors group-hover:text-gray-300">
                   {week === 1 && "Выявление эмоциональных причин симптомов."}
                   {week === 2 && "Очистка памяти от сенсорных паттернов."}
                   {week === 3 && "Восстановление барьеров на коже и бронхах."}
-                  {week === 4 && "Финальная интеграция всех систем."}
+                  {week === 4 && "Снятие телесных блоков и глубокое расслабление."}
+                  {week === 5 && "Управление стрессом и саморегуляция."}
+                  {week === 6 && "Формирование новых реакций иммунитета."}
+                  {week === 7 && "Интеграция новых паттернов в жизнь."}
+                  {week === 8 && "Финальная интеграция всех систем."}
                 </p>
                 
                 {isSelected && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 to-teal-500"></div>
                 )}
               </button>
             );
@@ -133,7 +143,7 @@ export const LessonView: React.FC = () => {
         {/* LESSONS CONTAINER FOR SELECTED WEEK */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="w-5 h-5 text-purple-400" />
+            <BookOpen className="w-5 h-5 text-teal-400" />
             <h3 className="text-xl font-black uppercase tracking-tight">Расписание занятий: Неделя {selectedWeek}</h3>
           </div>
 
@@ -153,41 +163,41 @@ export const LessonView: React.FC = () => {
                   className={`p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group 
                     ${isLocked 
                       ? 'bg-white/[0.02] border-white/5 opacity-60 cursor-not-allowed' 
-                      : 'bg-[#120a2c]/40 border-white/10 hover:border-purple-500/30 hover:bg-[#120a2c]/60 cursor-pointer'}`}
+                      : 'bg-[#120a2c]/40 border-white/10 hover:border-teal-500/30 hover:bg-[#120a2c]/60 cursor-pointer'}`}
                 >
                   {/* Lock glow element */}
                   {!isLocked && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   )}
 
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
                     <div className="space-y-1.5 flex-1 select-none">
                       <div className="flex items-center gap-2.5">
-                        <span className="text-[9px] px-2 py-0.5 bg-purple-500/15 border border-purple-500/20 rounded text-purple-400 font-bold uppercase tracking-wider">
+                        <span className="text-[9px] px-2 py-0.5 bg-teal-500/15 border border-teal-500/20 rounded text-teal-400 font-bold uppercase tracking-wider">
                           Урок {lesson.id + 1}
                         </span>
                         
                         {lesson.isCompleted && (
-                          <span className="text-[9px] px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/20 rounded text-emerald-400 font-black uppercase tracking-wider flex items-center gap-1">
+                          <span className="text-[9px] px-2 py-0.5 bg-teal-500/15 border border-teal-500/20 rounded text-teal-400 font-black uppercase tracking-wider flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" /> Пройдено
                           </span>
                         )}
 
                         {isLocked && lockStatus.reason === 'drip' && (
-                          <span className="text-[9px] px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded text-amber-500 font-bold uppercase tracking-wider flex items-center gap-1">
+                          <span className="text-[9px] px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 rounded text-indigo-500 font-bold uppercase tracking-wider flex items-center gap-1">
                             <Clock className="w-3 h-3" /> Доступно {lockStatus.unlockDate}
                           </span>
                         )}
 
                         {isLocked && lockStatus.reason === 'purchase' && (
-                          <span className="text-[9px] px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 rounded text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                          <span className="text-[9px] px-2 py-0.5 bg-teal-500/10 border border-teal-500/20 rounded text-teal-400 font-bold uppercase tracking-wider flex items-center gap-1">
                             <Lock className="w-3 h-3" /> Требуется терапевтический доступ
                           </span>
                         )}
                       </div>
 
                       <h4 className={`font-black text-lg transition-colors 
-                        ${isLocked ? 'text-gray-500' : 'text-white group-hover:text-purple-300'}`}>
+                        ${isLocked ? 'text-gray-500' : 'text-white group-hover:text-teal-300'}`}>
                         {lesson.title}
                       </h4>
 
@@ -210,11 +220,11 @@ export const LessonView: React.FC = () => {
                             <Lock className="w-4 h-4" />
                           </div>
                         ) : lesson.isCompleted ? (
-                          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                          <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
                             <CheckCircle className="w-5 h-5" />
                           </div>
                         ) : (
-                          <button className="w-10 h-10 rounded-xl bg-purple-600 hover:bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-900/30 transform active:scale-95 transition-all">
+                          <button className="w-10 h-10 rounded-xl bg-teal-600 hover:bg-teal-500 flex items-center justify-center text-white shadow-lg shadow-teal-900/30 transform active:scale-95 transition-all">
                             <Play className="w-4.5 h-4.5 fill-current ml-0.5" />
                           </button>
                         )}
@@ -257,16 +267,16 @@ export const LessonView: React.FC = () => {
       {/* Back to schedule list link */}
       <button 
         onClick={() => setView(ViewState.LESSONS)}
-        className="mb-6 flex items-center gap-2 text-xs font-black uppercase text-purple-400 hover:text-purple-300 transition-colors select-none tracking-wider"
+        className="mb-6 flex items-center gap-2 text-xs font-black uppercase text-teal-400 hover:text-teal-300 transition-colors select-none tracking-wider"
       >
         <ArrowLeft className="w-4 h-4" /> Назад к расписанию
       </button>
 
       {/* Lesson Banner Card */}
       <div className="relative glass-card p-6 md:p-8 overflow-hidden rounded-3xl mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[70px] pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/5 rounded-full blur-[70px] pointer-events-none"></div>
         
-        <span className="text-[9px] px-2 py-0.5 bg-purple-500/15 border border-purple-500/20 rounded text-purple-400 font-bold uppercase tracking-widest leading-none">
+        <span className="text-[9px] px-2 py-0.5 bg-teal-500/15 border border-teal-500/20 rounded text-teal-400 font-bold uppercase tracking-widest leading-none">
           УРОК {lesson.id + 1}
         </span>
         <h1 className="text-3xl font-black text-white mt-3 leading-tight">{lesson.title}</h1>
@@ -277,26 +287,26 @@ export const LessonView: React.FC = () => {
       <div className="space-y-6">
         {lesson.blocks.map((block, index) => {
           const isCompleted = lesson.completedBlockIds.includes(block.id);
-          const isDiagnosticsBlock = block.id === 'l0-b3' || block.title.includes('диагностика') || block.title.includes('Диагностический');
+          const isDiagnosticsBlock = lesson.id === 0 && block.id === 'l0-b1';
 
           return (
             <div 
               key={block.id} 
               className={`glass-card overflow-hidden transition-all duration-300 border
-                ${isCompleted ? 'border-emerald-500/25 shadow-[0_4px_25px_rgba(16,185,129,0.03)]' : 'border-white/10'}`}
+                ${isCompleted ? 'border-teal-500/25 shadow-[0_4px_25px_rgba(16,185,129,0.03)]' : 'border-white/10'}`}
             >
               {/* Accordion / Block Header */}
               <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
                 <div className="flex items-center gap-3.5 select-none">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-extrabold border transition-all
                     ${isCompleted 
-                      ? 'bg-emerald-500/15 border-emerald-500/20 text-emerald-400' 
+                      ? 'bg-teal-500/15 border-teal-500/20 text-teal-400' 
                       : 'bg-white/5 border-white/10 text-gray-400'}`}>
                     {index + 1}
                   </div>
                   <span className="font-bold text-sm tracking-wide text-gray-200">{block.title}</span>
                 </div>
-                {isCompleted && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
+                {isCompleted && <CheckCircle className="w-5 h-5 text-teal-400 shrink-0" />}
               </div>
 
               {/* Accordion / Block Content */}
@@ -307,7 +317,7 @@ export const LessonView: React.FC = () => {
                   <div className="rounded-2xl overflow-hidden bg-black aspect-video relative group border border-white/5 shadow-2xl">
                     <img src={block.coverUrl} className="w-full h-full object-cover opacity-60 group-hover:scale-[1.02] transition-transform duration-500" alt="Video cover" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <button className="w-16 h-16 bg-purple-600/90 hover:bg-purple-500 hover:scale-110 shadow-xl shadow-purple-900/40 rounded-full flex items-center justify-center transition-all duration-300">
+                      <button className="w-16 h-16 bg-teal-600/90 hover:bg-teal-500 hover:scale-110 shadow-xl shadow-teal-900/40 rounded-full flex items-center justify-center transition-all duration-300">
                         <Play className="w-6 h-6 text-white fill-current ml-1" />
                       </button>
                     </div>
@@ -321,13 +331,13 @@ export const LessonView: React.FC = () => {
 
                 {/* Assignment input area */}
                 {block.hasAssignment && !isDiagnosticsBlock && (
-                  <div className="bg-[#120a2c]/50 rounded-xl p-5 border border-purple-500/15">
-                    <h4 className="font-extrabold text-xs text-purple-400 hover:text-purple-300 uppercase tracking-widest mb-3.5 flex items-center gap-2">
+                  <div className="bg-[#120a2c]/50 rounded-xl p-5 border border-teal-500/15">
+                    <h4 className="font-extrabold text-xs text-teal-400 hover:text-teal-300 uppercase tracking-widest mb-3.5 flex items-center gap-2">
                       <FileText className="w-4 h-4" /> Ваше Практическое Задание
                     </h4>
                     <p className="text-xs text-gray-300 mb-4 leading-relaxed font-light">{block.assignmentDescription}</p>
                     <textarea 
-                      className="w-full p-4 rounded-xl bg-[#070311] text-white border border-white/10 focus:border-purple-500/50 outline-none text-xs leading-relaxed font-light transition-all placeholder:text-gray-600"
+                      className="w-full p-4 rounded-xl bg-[#070311] text-white border border-white/10 focus:border-teal-500/50 outline-none text-xs leading-relaxed font-light transition-all placeholder:text-gray-600"
                       rows={4}
                       placeholder="Напишите здесь ваши наблюдения, чувства или биологический ответ..."
                       defaultValue={block.userAnswer}
@@ -343,7 +353,7 @@ export const LessonView: React.FC = () => {
                         setView(ViewState.DIAGNOSTICS);
                         if (!isCompleted) handleMarkComplete(block.id); 
                       }}
-                      className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transform active:scale-95 transition-all shadow-xl shadow-purple-900/30"
+                      className="px-8 py-3.5 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-500 hover:to-teal-500 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transform active:scale-95 transition-all shadow-xl shadow-teal-900/30"
                     >
                       <Stethoscope className="w-4 h-4" /> Начать Диагностику куратора
                     </button>
@@ -354,7 +364,7 @@ export const LessonView: React.FC = () => {
                 {!isCompleted && !isDiagnosticsBlock && (
                   <button 
                     onClick={() => handleMarkComplete(block.id)}
-                    className="w-full py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-black uppercase tracking-wider rounded-xl transition-all select-none hover:border-purple-500/30 active:scale-98"
+                    className="w-full py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-black uppercase tracking-wider rounded-xl transition-all select-none hover:border-teal-500/30 active:scale-98"
                   >
                     Отметить раздел как пройденный
                   </button>

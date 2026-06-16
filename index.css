@@ -1,57 +1,43 @@
-/* AllergyNet Stylesheet - Premium Light Aero Glass Theme */
+/* AllergyNet Stylesheet */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Primary (Teal) */
+  /* Primary (Teal / Cyan) */
   --color-primary-50: #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-300: #5eead4;
-  --color-primary-400: #2dd4bf;
-  --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;
-  --color-primary-700: #0f766e;
-  --color-primary-800: #115e59;
-  --color-primary-900: #134e4a;
+  --color-primary-500: #0ca3be;
   
   /* Neutral (Slate) */
   --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
   --color-neutral-900: #0f172a;
-  
-  /* Accents */
-  --color-danger-bg: #fff1f2;         /* Rose 50 */
-  --color-danger-text: #f43f5e;       /* Rose 500 */
-  --color-danger-dark: #881337;       /* Rose 900 */
-  
-  --color-warning-bg: #fffbeb;        /* Amber 50 */
-  --color-warning-text: #f59e0b;      /* Amber 500 */
-  --color-warning-dark: #78350f;      /* Amber 900 */
-  
-  --color-success-bg: #ecfdf5;        /* Emerald 50 */
-  --color-success-text: #10b981;      /* Emerald 500 */
-  
-  --color-info-bg: #f0f9ff;           /* Sky 50 */
-  --color-info-text: #0ea5e9;         /* Sky 500 */
-  
-  --color-medicine-bg: #e0e7ff;       /* Indigo 50 */
-  --color-medicine-text: #6366f1;     /* Indigo 500 */
 }
 
-/* Base body styles with subtle teal radial grid */
+/* Gradient text accents */
+.meta-gradient-text {
+  background: linear-gradient(to right, #8b5cf6, #0ca3be, #8b5cf6) !important;
+  background-size: 200% auto !important;
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: shine 4s linear infinite !important;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Base body styles */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  background-color: #FFFFFF !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f1f5f9 !important;
   background-image: 
-    radial-gradient(rgba(45, 212, 191, 0.03) 1.5px, transparent 1.5px),
-    linear-gradient(to bottom, #FFFFFF 0%, #F8FAFC 100%) !important;
-  background-size: 40px 40px, 100% 100% !important;
+    radial-gradient(rgba(12, 163, 190, 0.05) 1.5px, transparent 1.5px) !important;
+  background-size: 40px 40px !important;
   background-attachment: fixed !important;
-  color: #475569 !important; /* Slate 600 default */
   margin: 0;
+  overflow-x: hidden;
 }
 
 /* Scrollbar styling */
@@ -62,9 +48,6 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -73,76 +56,45 @@ body {
   scrollbar-width: none;
 }
 
-/* Global Aero Glass panels styling */
-.glass-card,
-[class*="glass-card"] {
-  background: rgba(255, 255, 255, 0.65) !important;
+/* Global components styling */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(40px) !important;
   -webkit-backdrop-filter: blur(40px) !important;
-  border: 1px solid rgba(45, 212, 191, 0.15) !important;
+  border: 1px solid rgba(12, 163, 190, 0.15) !important;
   box-shadow: 0 10px 40px rgba(15, 23, 42, 0.04) !important;
   border-radius: 24px;
 }
 
-/* Force Light Theme Colors on Dark Class Names */
+/* Force Light Theme Colors on Dark Class Names globally */
 [class*="bg-[#0a0518]"],
 [class*="bg-[#120a2c]"],
 [class*="bg-[#070311]"],
-[class*="bg-purple-950"],
+[class*="bg-teal-950"],
+[class*="bg-emerald-950"],
+[class*="bg-indigo-950"],
 [class*="bg-black/"],
-[class*="bg-gray-950"] {
+[class*="bg-gray-950"],
+[class*="bg-white/10"] {
   background-color: rgba(255, 255, 255, 0.6) !important;
   backdrop-filter: blur(40px) !important;
   -webkit-backdrop-filter: blur(40px) !important;
-  border: 1px solid rgba(45, 212, 191, 0.12) !important;
+  border: 1px solid rgba(12, 163, 190, 0.12) !important;
   box-shadow: 0 8px 30px rgba(15, 23, 42, 0.03) !important;
 }
 
-/* Top header glass */
-header {
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.12) !important;
-}
-
-/* Sidebar structure */
-aside {
-  background: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-  border-right: 1px solid rgba(45, 212, 191, 0.12) !important;
-}
-
-/* Prevent text inversion on components that MUST have white text (like bold buttons, tags) */
+/* Prevent text inversion on components that MUST have white text */
 button.bg-gradient-to-r,
-button.bg-purple-600,
-button.bg-green-600,
-button.bg-teal-500,
-button.bg-indigo-600,
+button.bg-[#0ca3be],
+button.bg-[#14b8a6],
+button[class*="bg-teal-500"],
+button[class*="bg-emerald-600"],
 .bg-gradient-to-r.text-white,
-.bg-purple-600.text-white,
-.bg-cyan-500.text-white,
-.bg-teal-500.text-white,
-.bg-indigo-600.text-white,
-.bg-green-600.text-white,
+[class*="bg-[#0ca3be]"].text-white,
 .btn-primary,
-[class*="bg-red-500"] {
+[class*="bg-red-500"],
+[class*="bg-emerald-600"] {
   color: #FFFFFF !important;
-}
-
-/* General typography overrides to Slate colors */
-h1, h2, h3, h4, h5, h6,
-.font-black,
-.font-extrabold {
-  color: #0F172A !important; /* Slate 900 */
-}
-
-/* Override default white text on pages */
-.text-white,
-[class*="text-white"] {
-  /* Unless it's inside a primary button, badge, or has active text background override */
-  color: #0F172A;
 }
 
 /* Exclude certain elements from text-white override */
@@ -151,17 +103,20 @@ button.text-white,
 .text-white.font-black.uppercase,
 span.text-white.font-black,
 .bg-gradient-to-r span,
-.bg-[#0a0518] button span,
-.bg-[#120a2c] button span,
-aside [class*="bg-purple-950"] select,
-aside select option {
+.bg-[#0ca3be] span {
   color: inherit;
 }
 
-/* Custom exception for options in select */
-select option {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
+/* Override default white text on pages */
+.text-white,
+[class*="text-white"] {
+  color: #0F172A;
+}
+
+/* Override teal-400 to match new brand color better on white background */
+.text-teal-400,
+[class*="text-teal-400"] {
+  color: #0ca3be !important;
 }
 
 /* Subtle and muted texts */
@@ -169,93 +124,22 @@ select option {
 .text-gray-400,
 [class*="text-gray-300"],
 [class*="text-gray-400"] {
-  color: #64748B !important; /* Slate 500 */
+  color: #64748B !important; 
 }
 
 .text-gray-500,
 [class*="text-gray-500"] {
-  color: #94A3B8 !important; /* Slate 400 */
+  color: #94A3B8 !important; 
 }
 
-/* Icons active states */
-.nav-active-glow,
-.mobile-nav-active-icon svg {
-  color: #0D9488 !important; /* Deep teal accent */
-  filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.4)) !important;
-}
-
-/* Active Nav indicators */
-[class*="bg-white/10"].text-white {
-  background-color: rgba(45, 212, 191, 0.08) !important;
-  color: #0D9488 !important;
-  border: 1px solid rgba(45, 212, 191, 0.15) !important;
-}
-
-/* Gradient text accents */
-.meta-gradient-text,
-[class*="meta-gradient-text"] {
-  background: linear-gradient(135deg, #0D9488 0%, #818CF8 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  font-weight: 900 !important;
-}
-
-/* Floating background spheres style */
-.background-spheres {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -10;
-  overflow: hidden;
-}
-
-.sphere-left {
-  position: absolute;
-  top: -10vw;
-  left: -10vw;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, rgba(45, 212, 191, 0.22) 0%, rgba(129, 140, 248, 0.15) 70%, transparent 100%) !important;
-  filter: blur(120px);
-  border-radius: 50%;
-  animation: floatSpheres 20s infinite alternate ease-in-out;
-}
-
-.sphere-right {
-  position: absolute;
-  bottom: -10vw;
-  right: -10vw;
-  width: 45vw;
-  height: 45vw;
-  background: radial-gradient(circle, rgba(129, 140, 248, 0.22) 0%, rgba(45, 212, 191, 0.12) 75%, transparent 100%) !important;
-  filter: blur(140px);
-  border-radius: 50%;
-  animation: floatSpheres 25s infinite alternate-reverse ease-in-out;
-}
-
-@keyframes floatSpheres {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(60px, 40px) scale(1.08); }
-}
-
-/* Input elements styling */
+/* Fix inputs visibility */
 input, select, textarea {
-  background-color: rgba(255, 255, 255, 0.8) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
   color: #0F172A !important;
-  border: 1px solid rgba(45, 212, 191, 0.3) !important;
+  border: 1px solid rgba(12, 163, 190, 0.3) !important;
 }
 input:focus, select:focus, textarea:focus {
-  border-color: #0D9488 !important;
-  box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.15) !important;
-}
-
-/* Adaptive mobile nav fix for white */
-nav.md\:hidden {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-top-color: rgba(45, 212, 191, 0.15) !important;
-}
-
-/* Ensure progress bar is visible */
-.bg-gradient-to-r {
-  background-image: linear-gradient(to right, #2DD4BF, #818CF8) !important;
+  border-color: #0ca3be !important;
+  box-shadow: 0 0 0 2px rgba(12, 163, 190, 0.2) !important;
+  outline: none;
 }

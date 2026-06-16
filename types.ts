@@ -8,6 +8,10 @@ export enum ViewState {
   PROFILE = 'PROFILE',
   DIAGNOSTICS = 'DIAGNOSTICS',
   ADMIN = 'ADMIN',
+  ADMIN_USERS = 'ADMIN_USERS',
+  ADMIN_CRM = 'ADMIN_CRM',
+  ADMIN_CONTENT = 'ADMIN_CONTENT',
+  ADMIN_PRODUCTS = 'ADMIN_PRODUCTS',
   SERVICES = 'SERVICES',
   PRODUCT_DETAIL = 'PRODUCT_DETAIL',
   NUTRITION = 'NUTRITION',
@@ -18,7 +22,7 @@ export type UserRole = 'super_admin' | 'admin' | 'support' | 'participant' | 'us
 
 export type ParticipantSubRole = 'ВА' | 'ВАс' | 'ВАд' | 'Ма' | 'МАс' | 'Мад' | 'none';
 
-export type CRMStage = 'lead' | 'diagnostics' | 'pre_sale' | 'student';
+export type CRMStage = 'lead_magnet' | 'wait_payment' | 'student' | 'upsell';
 
 export interface User {
   id: string;

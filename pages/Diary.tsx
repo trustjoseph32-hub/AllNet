@@ -84,7 +84,7 @@ export const Diary: React.FC = () => {
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
                 />
                 <span className="text-sm text-gray-400">Отлично</span>
-                <span className={`w-10 text-center text-xl font-bold ${symptomLevel < 4 ? 'text-red-500' : symptomLevel < 8 ? 'text-yellow-500' : 'text-teal-600'}`}>
+                <span className={`w-10 text-center text-xl font-bold ${symptomLevel < 4 ? 'text-cyan-500' : symptomLevel < 8 ? 'text-indigo-500' : 'text-teal-600'}`}>
                   {symptomLevel}
                 </span>
               </div>
@@ -104,7 +104,7 @@ export const Diary: React.FC = () => {
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                 />
                 <span className="text-sm text-gray-400">Спокоен</span>
-                <span className={`w-10 text-center text-xl font-bold ${emotionLevel < 4 ? 'text-red-500' : emotionLevel < 8 ? 'text-yellow-500' : 'text-indigo-600'}`}>
+                <span className={`w-10 text-center text-xl font-bold ${emotionLevel < 4 ? 'text-cyan-500' : emotionLevel < 8 ? 'text-indigo-500' : 'text-indigo-600'}`}>
                   {emotionLevel}
                 </span>
               </div>
@@ -128,7 +128,7 @@ export const Diary: React.FC = () => {
             {/* Attacks today */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
               <label className="block text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4 text-rose-500" /> Были ли сегодня приступы с проявлением симптомов?
+                <AlertTriangle className="w-4 h-4 text-indigo-500" /> Были ли сегодня приступы с проявлением симптомов?
               </label>
               <div className="flex gap-4">
                 <button
@@ -136,7 +136,7 @@ export const Diary: React.FC = () => {
                   onClick={() => setHasAttacks(true)}
                   className={`px-6 py-2 rounded-lg font-bold text-sm border transition-all ${
                     hasAttacks 
-                      ? 'bg-rose-500 border-rose-500 text-white shadow-md shadow-rose-500/25' 
+                      ? 'bg-indigo-500 border-indigo-500 text-white shadow-md shadow-indigo-500/25' 
                       : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -156,22 +156,22 @@ export const Diary: React.FC = () => {
               </div>
 
               {hasAttacks && (
-                <div className="mt-4 p-4 bg-rose-50/50 rounded-lg border border-rose-100/60 animate-fade-in space-y-2">
-                  <label className="block text-sm font-semibold text-rose-800">
+                <div className="mt-4 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100/60 animate-fade-in space-y-2">
+                  <label className="block text-sm font-semibold text-indigo-800">
                     Оценка интенсивности приступа по субъективной шкале (1 — очень легкий, 10 — сильный/тяжелый приступ)
                   </label>
                   <div className="flex items-center gap-4">
-                    <span className="text-xs text-rose-600 font-medium">Легкий</span>
+                    <span className="text-xs text-indigo-600 font-medium">Легкий</span>
                     <input 
                       type="range" 
                       min="1" 
                       max="10" 
                       value={attackSeverity} 
                       onChange={(e) => setAttackSeverity(Number(e.target.value))} 
-                      className="w-full h-2 bg-rose-200 rounded-lg appearance-none cursor-pointer accent-rose-600"
+                      className="w-full h-2 bg-indigo-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
                     />
-                    <span className="text-xs text-rose-600 font-medium">Тяжелый</span>
-                    <span className="w-10 text-center text-lg font-black text-rose-600">
+                    <span className="text-xs text-indigo-600 font-medium">Тяжелый</span>
+                    <span className="w-10 text-center text-lg font-black text-indigo-600">
                       {attackSeverity}
                     </span>
                   </div>
@@ -241,7 +241,7 @@ export const Diary: React.FC = () => {
                  itemStyle={{ fontSize: '12px', padding: '1px 0' }}
                />
                <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-               <Bar name="Интенсивность приступа" dataKey="attack" fill="#f43f5e" barSize={16} radius={[4, 4, 0, 0]} opacity={0.8} />
+               <Bar name="Интенсивность приступа" dataKey="attack" fill="#6366f1" barSize={16} radius={[4, 4, 0, 0]} opacity={0.8} />
                <Line name="Физическое состояние (1-10)" type="monotone" dataKey="physical" stroke="#0d9488" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
                <Line name="Эмоциональное состояние (1-10)" type="monotone" dataKey="emotional" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
             </ComposedChart>
@@ -277,7 +277,7 @@ export const Diary: React.FC = () => {
                     <div className="text-sm flex items-center gap-2">
                       <span className="font-medium text-slate-500">Приступы сегодня:</span>
                       {entry.hasAttacks ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-550 bg-rose-50 text-rose-750 text-rose-700 border border-rose-100 shadow-sm">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 shadow-sm">
                           Да, интенсивность: {entry.attackSeverity || 5}/10
                         </span>
                       ) : (
@@ -295,7 +295,7 @@ export const Diary: React.FC = () => {
                     <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">Физика</span>
                     <div className={`
                       w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg mb-1 shadow-sm
-                      ${entry.symptomLevel < 4 ? 'bg-red-50 text-red-700 border border-red-200' : entry.symptomLevel < 8 ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-teal-50 text-teal-700 border border-teal-250 border-teal-200'}
+                      ${entry.symptomLevel < 4 ? 'bg-cyan-50 text-cyan-700 border border-cyan-200' : entry.symptomLevel < 8 ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-teal-50 text-teal-700 border border-teal-200'}
                     `}>
                       {entry.symptomLevel}
                     </div>
@@ -304,7 +304,7 @@ export const Diary: React.FC = () => {
                     <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">Психика</span>
                     <div className={`
                       w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg mb-1 shadow-sm
-                      ${entry.emotionLevel < 4 ? 'bg-red-50 text-red-700 border border-red-200' : entry.emotionLevel < 8 ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'}
+                      ${entry.emotionLevel < 4 ? 'bg-cyan-50 text-cyan-700 border border-cyan-200' : entry.emotionLevel < 8 ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'}
                     `}>
                       {entry.emotionLevel}
                     </div>

@@ -10,8 +10,8 @@ const BrandingHeader: React.FC<{ className?: string }> = ({ className = "" }) =>
       <div className="animate-float-1 w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center shadow-sm border border-red-100/50">
         <Apple className="w-7 h-7 text-red-300" />
       </div>
-      <div className="animate-float-2 w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center shadow-sm border border-yellow-100/50">
-        <Flower2 className="w-7 h-7 text-yellow-400" />
+      <div className="animate-float-2 w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center shadow-sm border border-indigo-100/50">
+        <Flower2 className="w-7 h-7 text-indigo-400" />
       </div>
       <div className="animate-float-3 w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shadow-sm border border-blue-100/50">
         <Cat className="w-7 h-7 text-blue-300" />

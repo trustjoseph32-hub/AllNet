@@ -43,7 +43,7 @@ export const LessonCard: React.FC<LessonCardProps> = ({ lesson, onClick }) => {
         <div className="ml-4 mt-1">
           {lockStatus.locked ? (
             lockStatus.reason === 'drip' ? (
-              <div className="flex flex-col items-center text-orange-500">
+              <div className="flex flex-col items-center text-indigo-500">
                  <Clock className="w-5 h-5" />
               </div>
             ) : (
@@ -62,7 +62,7 @@ export const LessonCard: React.FC<LessonCardProps> = ({ lesson, onClick }) => {
       <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
         <span>{lesson.durationMinutes} мин</span>
         {lockStatus.locked && lockStatus.reason === 'drip' && (
-          <span className="text-orange-600 font-medium">Доступно с: {lockStatus.unlockDate}</span>
+          <span className="text-indigo-600 font-medium">Доступно с: {lockStatus.unlockDate}</span>
         )}
         {lockStatus.locked && lockStatus.reason === 'purchase' && (
            <span className="text-blue-600 font-medium uppercase">Требуется покупка</span>

@@ -88,7 +88,7 @@ export const ProductDetail: React.FC = () => {
            {/* Benefits */}
            <div className="bg-white rounded-2xl p-8 border border-gray-100">
               <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                 <Star className="w-5 h-5 text-yellow-500" /> Что вы получите
+                 <Star className="w-5 h-5 text-indigo-500" /> Что вы получите
               </h2>
               <div className="grid grid-cols-1 gap-4">
                  {(product.benefits || product.features).map((item, i) => (

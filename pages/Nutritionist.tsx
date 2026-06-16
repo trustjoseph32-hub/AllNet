@@ -79,7 +79,7 @@ export const Nutritionist: React.FC = () => {
         <div className="lg:col-span-4 space-y-4">
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-orange-500" /> Фокус рациона
+              <Flame className="w-4 h-4 text-indigo-500" /> Фокус рациона
             </h3>
             <div className="space-y-2">
               {[
@@ -114,10 +114,10 @@ export const Nutritionist: React.FC = () => {
             </Button>
           </div>
 
-          <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <div className="bg-indigo-50 rounded-2xl p-5 border border-indigo-100">
              <div className="flex gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
-                <p className="text-xs text-amber-700 leading-relaxed">
+                <AlertCircle className="w-5 h-5 text-indigo-600 shrink-0" />
+                <p className="text-xs text-indigo-700 leading-relaxed">
                   ИИ учитывает ваши триггеры из дневника: <strong>{diaryEntries.slice(-1)[0]?.triggers || 'не обнаружены'}</strong>.
                 </p>
              </div>
@@ -146,7 +146,7 @@ export const Nutritionist: React.FC = () => {
             <div className="space-y-6">
                {/* Daily Meals */}
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <MealCard type="Завтрак" data={generatedPlan.breakfast} icon="🍳" color="bg-orange-50" text="text-orange-700" />
+                  <MealCard type="Завтрак" data={generatedPlan.breakfast} icon="🍳" color="bg-indigo-50" text="text-indigo-700" />
                   <MealCard type="Обед" data={generatedPlan.lunch} icon="🥗" color="bg-emerald-50" text="text-emerald-700" />
                   <MealCard type="Ужин" data={generatedPlan.dinner} icon="🍲" color="bg-blue-50" text="text-blue-700" />
                </div>

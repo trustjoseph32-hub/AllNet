@@ -9,6 +9,9 @@ import { AICurator } from './pages/AICurator';
 import { Profile } from './pages/Profile';
 import { Diagnostics } from './pages/Diagnostics';
 import { Admin } from './pages/Admin';
+import { AdminContent } from './pages/AdminContent';
+import { AdminCRM } from './pages/AdminCRM';
+import { AdminProducts } from './pages/AdminProducts';
 import { Services } from './pages/Services';
 import { ProductDetail } from './pages/ProductDetail';
 import { Auth } from './pages/Auth';
@@ -33,7 +36,8 @@ const GlobalLoader: React.FC = () => {
 const Content: React.FC = () => {
   const { view, user } = useStore();
 
-  if (view === ViewState.ADMIN && user?.role !== 'admin' && user?.role !== 'super_admin') {
+  const adminViews = [ViewState.ADMIN, ViewState.ADMIN_USERS, ViewState.ADMIN_CRM, ViewState.ADMIN_CONTENT, ViewState.ADMIN_PRODUCTS];
+  if (adminViews.includes(view) && user?.role !== 'admin' && user?.role !== 'super_admin') {
     return <div className="p-8 text-center text-red-600">Доступ запрещен</div>;
   }
 
@@ -49,7 +53,11 @@ const Content: React.FC = () => {
     case ViewState.PRODUCT_DETAIL: return <ProductDetail />;
     case ViewState.NUTRITION: return <Nutritionist />;
     case ViewState.PROGRESS: return <Progress />;
-    case ViewState.ADMIN: return <Admin />;
+    case ViewState.ADMIN:
+    case ViewState.ADMIN_USERS: return <Admin />;
+    case ViewState.ADMIN_CRM: return <AdminCRM />;
+    case ViewState.ADMIN_CONTENT: return <AdminContent />;
+    case ViewState.ADMIN_PRODUCTS: return <AdminProducts />;
     default: return <Dashboard />;
   }
 };

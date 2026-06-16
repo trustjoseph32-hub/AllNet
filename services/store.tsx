@@ -5,7 +5,7 @@ import {
   DiagnosticsState, CRMStage, Product, Order, UserAccess, OrderStatus,
   UserRole, ParticipantSubRole
 } from '../types';
-import { PRODUCTS, ANAMNESIS_QUESTIONS, MOCK_USERS_LIST, LESSONS, MOCK_DIARY_ENTRIES, BADGES } from '../constants';
+import { PRODUCTS, ANAMNESIS_QUESTIONS_BY_SUBROLE, MOCK_USERS_LIST, LESSONS, MOCK_DIARY_ENTRIES, BADGES } from '../constants';
 
 interface StoreContextType {
   user: User | null;
@@ -24,6 +24,10 @@ interface StoreContextType {
   activeProductId: string | null;
   orders: Order[];
   userAccess: UserAccess[];
+  
+  addProduct: (product: Product) => void;
+  updateProduct: (id: string, product: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
   
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
@@ -54,6 +58,7 @@ interface StoreContextType {
 
   updateUserRoleAndSubRole: (userId: string, role: UserRole, subRole: ParticipantSubRole) => void;
   toggleUserProduct: (userId: string, productId: string) => void;
+  updateUserAvatar: (avatarUrl: string) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -71,17 +76,29 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>(MOCK_DIARY_ENTRIES);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [badges, setBadges] = useState<Badge[]>(BADGES);
-  const [products] = useState<Product[]>(PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
+
+  const addProduct = (product: Product) => {
+    setProducts(prev => [...prev, product]);
+  };
+  
+  const updateProduct = (id: string, product: Partial<Product>) => {
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...product } : p));
+  };
+  
+  const deleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
+  };
   const INITIAL_MOCK_ORDERS: Order[] = [
-    { id: 'ord-01', userId: 'user-va', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2023-11-20T10:00:00Z' },
-    { id: 'ord-02', userId: 'user-vas', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2023-10-15T14:30:00Z' },
-    { id: 'ord-03', userId: 'user-vad', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2023-11-05T09:15:00Z' },
-    { id: 'ord-04', userId: 'user-vad', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2023-11-05T09:20:00Z' },
-    { id: 'ord-05', userId: 'user-ma', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2023-11-18T16:45:00Z' },
-    { id: 'ord-06', userId: 'user-mas', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2023-09-01T11:00:00Z' },
-    { id: 'ord-07', userId: 'user-mas', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2023-09-01T11:05:00Z' },
-    { id: 'ord-08', userId: 'user-mad', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2023-11-10T12:00:00Z' },
+    { id: 'ord-01', userId: 'user-va', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2026-06-10T10:00:00Z' },
+    { id: 'ord-02', userId: 'user-vas', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2026-05-15T14:30:00Z' },
+    { id: 'ord-03', userId: 'user-vad', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2026-06-05T09:15:00Z' },
+    { id: 'ord-04', userId: 'user-vad', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2026-06-05T09:20:00Z' },
+    { id: 'ord-05', userId: 'user-ma', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2026-06-12T16:45:00Z' },
+    { id: 'ord-06', userId: 'user-mas', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2026-01-01T11:00:00Z' },
+    { id: 'ord-07', userId: 'user-mas', productId: 'prod_meta_scan', amount: 1500, status: 'PAID', createdAt: '2026-01-01T11:05:00Z' },
+    { id: 'ord-08', userId: 'user-mad', productId: 'prod_course_full', amount: 25000, status: 'PAID', createdAt: '2026-06-10T12:00:00Z' },
   ];
 
   const INITIAL_USER_ACCESS: UserAccess[] = [
@@ -99,7 +116,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const [userAccess, setUserAccess] = useState<UserAccess[]>(INITIAL_USER_ACCESS);
 
   const [diagnostics, setDiagnostics] = useState<DiagnosticsState>({
-    stage: 'SELECTION',
+    stage: 'ANAMNESIS',
     testType: null,
     currentAnamnesisIndex: 0,
     anamnesisAnswers: {},
@@ -338,6 +355,15 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
     }));
   };
 
+  const updateUserAvatar = (avatarUrl: string) => {
+    if (user) {
+      const updated = { ...user, avatarUrl: avatarUrl };
+      setUser(updated);
+      setUsersList(prev => prev.map(u => u.id === user.id ? updated : u));
+      localStorage.setItem('at_user', JSON.stringify(updated));
+    }
+  };
+
   const toggleUserProduct = (userId: string, productId: string) => {
     setUsersList(prev => prev.map(u => {
       if (u.id === userId) {
@@ -416,7 +442,7 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
     } else {
       setDiagnostics(prev => ({
         ...prev,
-        stage: 'SELECTION',
+        stage: 'ANAMNESIS',
         isComplete: false,
         viewingUserId: userId
       }));
@@ -434,7 +460,9 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
   const nextAnamnesisStep = () => {
       setDiagnostics(prev => {
           const nextIdx = prev.currentAnamnesisIndex + 1;
-          if (nextIdx >= ANAMNESIS_QUESTIONS.length) return { ...prev, stage: 'TEST' };
+          const viewingUser = prev.viewingUserId ? usersList.find(u => u.id === prev.viewingUserId) || user : user;
+          const questions = ANAMNESIS_QUESTIONS_BY_SUBROLE[viewingUser?.subRole || 'none'] || ANAMNESIS_QUESTIONS_BY_SUBROLE['none'];
+          if (nextIdx >= questions.length) return { ...prev, stage: 'TEST' };
           return { ...prev, currentAnamnesisIndex: nextIdx };
       });
   };
@@ -454,11 +482,12 @@ export const AppProvider: React.FC<{children: React.ReactNode}> = ({ children })
     <StoreContext.Provider value={{
         user, usersList, view, activeLessonId, lessons, diaryEntries, chatMessages, badges, isAuthenticated, diagnostics, isLoading,
         products, activeProductId, orders, userAccess,
+        addProduct, updateProduct, deleteProduct,
         login, register, logout, setView, setActiveLesson, markBlockComplete, addDiaryEntry, sendChatMessage, triggerEmergency,
         purchaseProduct, viewProductDetail, isLessonLocked,
         updateLesson, toggleUserStatus, viewUserDiagnostics, moveUserToStage, activateUserAccess,
         startDiagnostics, saveAnamnesisAnswer, nextAnamnesisStep, prevAnamnesisStep, submitTestAnswer, finishDiagnostics,
-        updateUserRoleAndSubRole, toggleUserProduct
+        updateUserRoleAndSubRole, toggleUserProduct, updateUserAvatar
     }}>
       {children}
     </StoreContext.Provider>

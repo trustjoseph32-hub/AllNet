@@ -1,15 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../services/store';
 import { Button } from '../components/Button';
 import { ProgressBar } from '../components/ProgressBar';
-import { CheckCircle, FileText, User, Activity, ArrowRight, ArrowLeft, Mic, MicOff, Play } from 'lucide-react';
-import { ANAMNESIS_QUESTIONS, TEST_QUESTIONS } from '../constants';
+import { CheckCircle, FileText, ArrowRight, ArrowLeft, Mic, MicOff } from 'lucide-react';
+import { ANAMNESIS_QUESTIONS_BY_SUBROLE, TEST_QUESTIONS } from '../constants';
 
 export const Diagnostics: React.FC = () => {
   const { 
+    user,
+    usersList,
     diagnostics, 
-    startDiagnostics, 
     saveAnamnesisAnswer, 
     nextAnamnesisStep, 
     prevAnamnesisStep, 
@@ -17,79 +18,15 @@ export const Diagnostics: React.FC = () => {
     finishDiagnostics 
   } = useStore();
 
-  const [showIntro, setShowIntro] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-
-  // STAGE 1: Intro & Selection
-  if (diagnostics.stage === 'SELECTION') {
-    if (showIntro) {
-      return (
-        <div className="max-w-4xl mx-auto py-8 animate-fade-in flex flex-col items-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 text-center uppercase tracking-tight">
-            Ваш диагностический профиль
-          </h1>
-          
-          <div className="w-full aspect-video bg-gray-900 rounded-2xl shadow-2xl overflow-hidden relative mb-10 group cursor-pointer border border-gray-800">
-            {/* Mock Video Content */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2070" 
-              alt="Diagnostics Intro" 
-              className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-              <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform duration-300 shadow-xl">
-                <Play className="w-8 h-8 text-white fill-current ml-1" />
-              </div>
-              <div className="absolute bottom-8 left-0 right-0 text-center px-4">
-                <p className="text-white text-xl font-bold text-shadow-lg">Зачем нужен профиль и как его получить</p>
-                <p className="text-gray-300 text-sm mt-2 font-medium">Посмотрите вводное видео (2:30)</p>
-              </div>
-            </div>
-          </div>
-
-          <Button 
-            size="lg" 
-            className="px-12 py-4 text-lg bg-green-600 hover:bg-green-700 shadow-xl shadow-green-600/30 transform hover:-translate-y-1 transition-all duration-200 font-bold tracking-wide"
-            onClick={() => setShowIntro(false)}
-          >
-            Заполнить профиль
-          </Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="max-w-3xl mx-auto animate-fade-in">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Выберите тип диагностики</h1>
-          <p className="text-gray-500">Комплексный анализ вашего психосоматического профиля.<br/>2 Этапа: Сбор Анамнеза (10 вопросов) + Глубинный Тест (120 вопросов).</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-green-500 transition-colors cursor-pointer group" onClick={() => startDiagnostics('allergy_adult')}>
-             <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-               <User className="w-6 h-6" />
-             </div>
-             <h3 className="text-xl font-bold text-gray-900 mb-2">Для Взрослых</h3>
-             <p className="text-sm text-gray-500">Анализ ваших личных симптомов (аллергия, дерматит, астма) и эмоционального фона.</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-green-500 transition-colors cursor-pointer group" onClick={() => startDiagnostics('allergy_kids')}>
-             <div className="w-12 h-12 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-pink-600 group-hover:text-white transition-colors">
-               <Activity className="w-6 h-6" />
-             </div>
-             <h3 className="text-xl font-bold text-gray-900 mb-2">Для Детей</h3>
-             <p className="text-sm text-gray-500">Анализ симптомов ребенка через призму семейной системы и состояния мамы.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // STAGE 2: Anamnesis Wizard
   if (diagnostics.stage === 'ANAMNESIS') {
-    const currentQ = ANAMNESIS_QUESTIONS[diagnostics.currentAnamnesisIndex];
+    const viewingUser = diagnostics.viewingUserId ? usersList.find(u => u.id === diagnostics.viewingUserId) || user : user;
+    const subRole = viewingUser?.subRole || 'none';
+    const anamnesisQuestions = ANAMNESIS_QUESTIONS_BY_SUBROLE[subRole] || ANAMNESIS_QUESTIONS_BY_SUBROLE['none'];
+    
+    const currentQ = anamnesisQuestions[diagnostics.currentAnamnesisIndex];
     const currentAns = diagnostics.anamnesisAnswers[diagnostics.currentAnamnesisIndex]?.text || '';
     
     return (
@@ -98,9 +35,9 @@ export const Diagnostics: React.FC = () => {
         <div className="mb-8">
            <div className="flex justify-between items-center mb-2">
              <h2 className="text-lg font-bold text-gray-900">Сбор Анамнеза</h2>
-             <span className="text-sm text-gray-500 font-medium">Вопрос {diagnostics.currentAnamnesisIndex + 1} из {ANAMNESIS_QUESTIONS.length}</span>
+             <span className="text-sm text-gray-500 font-medium">Вопрос {diagnostics.currentAnamnesisIndex + 1} из {anamnesisQuestions.length}</span>
            </div>
-           <ProgressBar current={diagnostics.currentAnamnesisIndex + 1} max={ANAMNESIS_QUESTIONS.length} colorClass="bg-blue-500" />
+           <ProgressBar current={diagnostics.currentAnamnesisIndex + 1} max={anamnesisQuestions.length} colorClass="bg-blue-500" />
         </div>
 
         {/* Question Card */}
@@ -159,11 +96,11 @@ export const Diagnostics: React.FC = () => {
              <div className="flex gap-2">
                 <Button 
                   onClick={nextAnamnesisStep}
-                  disabled={!currentAns.trim()} // Require answer
+                  disabled={!currentAns.trim()} 
                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
                 >
-                  {diagnostics.currentAnamnesisIndex === ANAMNESIS_QUESTIONS.length - 1 ? 'Перейти к Тесту' : 'Далее'} 
-                  {diagnostics.currentAnamnesisIndex !== ANAMNESIS_QUESTIONS.length - 1 && <ArrowRight className="w-4 h-4" />}
+                  {diagnostics.currentAnamnesisIndex === anamnesisQuestions.length - 1 ? 'Перейти к Тесту' : 'Далее'} 
+                  {diagnostics.currentAnamnesisIndex !== anamnesisQuestions.length - 1 && <ArrowRight className="w-4 h-4" />}
                 </Button>
              </div>
           </div>
@@ -261,9 +198,9 @@ export const Diagnostics: React.FC = () => {
                <div>
                  <div className="flex justify-between mb-1">
                    <span className="text-sm font-medium text-gray-700">Подавленный гнев</span>
-                   <span className="text-sm font-bold text-yellow-500">Средний (3.5)</span>
+                   <span className="text-sm font-bold text-indigo-500">Средний (3.5)</span>
                  </div>
-                 <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-yellow-500 h-2 rounded-full" style={{width: '70%'}}></div></div>
+                 <div className="w-full bg-gray-200 rounded-full h-2"><div className="bg-indigo-500 h-2 rounded-full" style={{width: '70%'}}></div></div>
                </div>
              </div>
           </div>

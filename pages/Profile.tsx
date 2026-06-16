@@ -1,41 +1,62 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useStore } from '../services/store';
-import { ViewState, Badge, Lesson, Product } from '../types';
-import { ProgressBar } from '../components/ProgressBar';
+import { ViewState, Product } from '../types';
+import AvatarEditor from 'react-avatar-editor';
 import { 
-  Award, User as UserIcon, CheckCircle, TrendingUp, Activity, 
-  Sparkles, BookOpen, Heart, Calendar, Flame, ArrowRight, 
-  Lock, Shield, Star, Sparkle, ExternalLink, Zap
+  Award, User as UserIcon, Calendar, Flame, Camera, X,
+  Lock, Shield, Star, ExternalLink, Zap,
+  MapPin, Phone, Globe, Clock, Bell, ShieldCheck, Key, Smartphone, CreditCard, Receipt
 } from 'lucide-react';
 
 export const Profile: React.FC = () => {
   const { 
     user, 
-    lessons, 
     products, 
     userAccess, 
-    badges, 
-    setView, 
-    setActiveLesson,
-    viewUserDiagnostics 
+    setView,
+    updateUserAvatar
   } = useStore();
+
+  const [notifications, setNotifications] = useState({ push: true, email: true });
+  const [twoFactor, setTwoFactor] = useState(false);
+
+  const [editingAvatarImage, setEditingAvatarImage] = useState<string | null>(null);
+  const [avatarScale, setAvatarScale] = useState<number>(1);
+  const editorRef = useRef<AvatarEditor | null>(null);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result && typeof event.target.result === 'string') {
+          setEditingAvatarImage(event.target.result);
+          setAvatarScale(1);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveAvatar = () => {
+    if (editorRef.current) {
+      const canvas = editorRef.current.getImageScaledToCanvas();
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      updateUserAvatar(dataUrl);
+      setEditingAvatarImage(null);
+    }
+  };
 
   if (!user) return null;
 
-  // 1. Calculations for Lessons Progress
-  const totalLessons = lessons.length;
-  const completedLessons = lessons.filter(l => l.isCompleted).length;
-  const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-
   // 2. Calculations for Purchased Products
-  // User can have purchased products in user.purchasedProductIds or active ones in userAccess
   const purchasedIds = user.purchasedProductIds || [];
   const ownedProducts = products.filter(p => 
     purchasedIds.includes(p.id) || 
     userAccess.some(access => access.userId === user.id && access.productId === p.id)
   );
 
-  // 3. User Role translator to descriptive Russian
+  // 3. User Role translator
   const getRoleLabelRu = (role: string) => {
     switch (role) {
       case 'super_admin': return '⚡ Супер Администратор';
@@ -48,18 +69,6 @@ export const Profile: React.FC = () => {
     }
   };
 
-  const getSubRoleDescription = (sub: string | undefined) => {
-    switch (sub) {
-      case 'ВА': return 'Взрослый, аллергопатология';
-      case 'ВАс': return 'Взрослый, бронхиальная астма';
-      case 'ВАд': return 'Взрослый, атопический дерматит';
-      case 'Ма': return 'Мама, ребенок с аллергией';
-      case 'МАс': return 'Мама, ребенок с бронхиальной астмой';
-      case 'Мад': return 'Мама, ребенок с атопическим дерматитом';
-      default: return null;
-    }
-  };
-
   const joinedDateStr = user.joinedAt 
     ? new Date(user.joinedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
     : 'недавно';
@@ -67,347 +76,323 @@ export const Profile: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in text-white pb-20">
       
-      {/* 2-COLUMN TOP SECTION: HERO PROFILE & XP METEOR CARD */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* 1. БАЗОВАЯ ИНФОРМАЦИЯ (Идентификация) */}
+      <div className="glass-card p-6 md:p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-[80px] pointer-events-none"></div>
         
-        {/* HERO CARD (Left Column - Column Span 7) */}
-        <div className="lg:col-span-7 glass-card p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center md:items-start relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-          
-          {/* Avatar Area */}
-          <div className="relative group shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-tr from-purple-600 via-indigo-500 to-cyan-500 rounded-2xl blur-[4px] opacity-75 group-hover:opacity-100 transition-opacity"></div>
-            <div className="relative p-1 bg-[#120a2c] rounded-2xl">
+        <div className="flex items-center gap-2 mb-6">
+          <UserIcon className="w-5 h-5 text-teal-400" />
+          <h2 className="text-xl font-black uppercase tracking-tight text-white">Базовая информация</h2>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="relative group shrink-0 self-center md:self-start">
+            <div className="absolute inset-0 bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-500 rounded-2xl blur-[4px] opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative p-1 bg-[#120a2c] rounded-2xl w-[136px] h-[136px]">
               <img 
                 src={user.avatarUrl} 
                 alt={user.name} 
-                className="w-24 h-24 rounded-xl object-cover border border-white/10" 
+                className="w-full h-full rounded-xl object-cover border border-white/10" 
               />
+              <label className="absolute inset-1 flex flex-col items-center justify-center bg-[#070311]/60 opacity-0 group-hover:opacity-100 backdrop-blur-sm transition-opacity rounded-xl cursor-pointer">
+                <Camera className="w-6 h-6 text-white mb-1" />
+                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Изменить</span>
+                <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+              </label>
             </div>
             <span className="absolute -bottom-1.5 -right-1.5 bg-green-500 border-4 border-[#070311] rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black" title="В сети">
               ●
             </span>
           </div>
 
-          {/* User Details */}
-          <div className="flex-grow text-center md:text-left space-y-3">
-            <div>
-              <span className="text-[10px] font-black tracking-[0.25em] text-purple-400 uppercase block mb-1">ЛИЧНЫЙ ПРОФИЛЬ</span>
-              <h1 className="text-3xl font-black tracking-tight text-white mb-1 leading-none">{user.name}</h1>
-              <p className="text-xs text-gray-400 font-mono">{user.email}</p>
-            </div>
-
-            {/* Status Tags */}
-            <div className="flex flex-wrap justify-center md:justify-start gap-2 pt-1">
-              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider leading-none shadow-[0_2px_10px_rgba(168,85,247,0.15)] border
-                ${user.role === 'super_admin' ? 'bg-purple-950/40 text-purple-400 border-purple-500/30' : ''}
-                ${user.role === 'admin' ? 'bg-indigo-950/40 text-indigo-400 border-indigo-500/30' : ''}
-                ${user.role === 'support' ? 'bg-blue-900/40 text-blue-400 border-blue-500/30' : ''}
-                ${(user.role === 'participant' || user.role === 'student') ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/30' : ''}
-                ${user.role === 'user' ? 'bg-gray-800/40 text-gray-400 border-gray-700' : ''}
-              `}>
-                {getRoleLabelRu(user.role)}
-              </span>
-
-              {user.subRole && user.subRole !== 'none' && (
-                <span className="px-3 py-1 bg-[#120a2c] text-purple-400 border border-purple-500/20 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                  Подроль: {user.subRole}
-                </span>
-              )}
-            </div>
-
-            {/* Additional info */}
-            <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 pt-3 text-xs text-gray-400 font-medium">
-              <span className="flex items-center gap-1.5 justify-center md:justify-start">
-                <Calendar className="w-4 h-4 text-purple-400" />
-                В клубе с {joinedDateStr}
-              </span>
-              <span className="flex items-center gap-1.5 justify-center md:justify-start">
-                <Flame className="w-4 h-4 text-orange-500" />
-                Серия активности: {user.streak} дн.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* PROGRESS & LEVEL CARD (Right Column - Column Span 5) */}
-        <div className="lg:col-span-5 glass-card p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#140b2f] via-transparent to-transparent pointer-events-none"></div>
-          
-          <div className="flex justify-between items-start">
-            <div>
-              <span className="text-[10px] font-black tracking-[0.2em] text-gray-400 uppercase">ОЧКИ ОПЫТА И СОЗНАНИЕ</span>
-              <h3 className="text-2xl font-black text-white mt-1">Уровень {user.level}</h3>
-            </div>
-            
-            <div className="w-12 h-12 bg-purple-500/15 rounded-xl flex items-center justify-center border border-purple-500/20">
-              <Sparkle className="w-6 h-6 text-purple-400 animate-spin-slow" />
-            </div>
-          </div>
-
-          <div className="space-y-3 mt-6">
-            <div className="flex justify-between text-xs font-bold text-gray-300">
-              <span>{user.xp} XP</span>
-              <span className="text-purple-400">20,000 XP (Максимум)</span>
-            </div>
-            <ProgressBar 
-              current={user.xp} 
-              max={20000} 
-              colorClass="bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-500 h-2.5" 
-            />
-            <p className="text-[10px] text-gray-400 italic font-medium leading-relaxed uppercase tracking-wider text-center pt-1.5">
-              Каждое выполненное действие увеличивает энергетическую активность вашего поля
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* MID SECTION: INTERACTIVE DIAGNOSTICS & RESULTS CARDS */}
-      <div className="glass-card p-6 md:p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-[90px] pointer-events-none"></div>
-        
-        {user.diagnosticsStatus === 'completed' ? (
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Личные данные и Роль */}
+            <div className="space-y-4">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-full mb-2">
-                  <CheckCircle className="w-3 h-3" /> Профиль верифицирован
-                </div>
-                <h3 className="text-2xl font-black text-white uppercase tracking-tight">Показатели психосоматики</h3>
-                <p className="text-xs text-gray-400 mt-1 max-w-lg">
-                  Мы определили фоновые очаги вашей психосоматической регуляции. Эти напряжения вызывают повышенный гистаминный ответ.
-                </p>
-              </div>
-
-              <button 
-                onClick={() => viewUserDiagnostics(user.id)}
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transform active:scale-95 transition-all shadow-lg shadow-purple-900/30"
-              >
-                Открыть полный профиль <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Mini sliders / Indicators */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-white/5">
-              
-              <div className="bg-[#120a2c]/40 p-4 rounded-xl border border-white/5 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold text-gray-300">Психологическая Тревожность</span>
-                  <span className="font-extrabold text-red-400">Высокий (4.2)</span>
-                </div>
-                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                  <div className="bg-red-500 h-full rounded-full" style={{ width: '84%' }}></div>
-                </div>
-              </div>
-
-              <div className="bg-[#120a2c]/40 p-4 rounded-xl border border-white/5 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold text-gray-300">Подавленный Гнев / Границы</span>
-                  <span className="font-extrabold text-yellow-500">Средний (3.5)</span>
-                </div>
-                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                  <div className="bg-yellow-500 h-full rounded-full" style={{ width: '70%' }}></div>
-                </div>
-              </div>
-
-              <div className="bg-[#120a2c]/40 p-4 rounded-xl border border-white/5 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold text-gray-300">Семейный Конфликт</span>
-                  <span className="font-extrabold text-blue-400">Базовый (2.0)</span>
-                </div>
-                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                  <div className="bg-blue-500 h-full rounded-full" style={{ width: '40%' }}></div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 py-4">
-            <div className="space-y-2 text-center md:text-left">
-              <span className="text-[10px] font-black tracking-widest text-yellow-500 uppercase">ПСИХОСОМАТИЧЕСКАЯ ДИАГНОСТИКА</span>
-              <h3 className="text-2xl font-black text-white">Профиль не заполнен</h3>
-              <p className="text-gray-400 text-sm max-w-xl font-light leading-relaxed">
-                Вы не завершили диагностический опросник. Заполните тест из 120 вопросов, чтобы получить карту психосоматических напряжений и рекомендации ИИ-диагноста.
-              </p>
-            </div>
-            
-            <button 
-              onClick={() => setView(ViewState.DIAGNOSTICS)}
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transform active:scale-95 transition-all shadow-xl shadow-purple-900/30 shrink-0 select-none animate-pulse"
-            >
-              Пройти диагностику <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* BOTTOM SECTION: 2-COLUMN ACADEMIC & PRODUCTS VIEW */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* COURSE & LESSON MONITOR (Column 1) */}
-        <div className="glass-card p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <span className="text-[10px] font-black tracking-widest text-purple-400 uppercase">ОБУЧАЮЩИЙ ПРОЦЕСС</span>
-                <h3 className="text-xl font-black text-white mt-1">Пройденные уроки</h3>
-              </div>
-              <BookOpen className="w-6 h-6 text-purple-400" />
-            </div>
-
-            {/* Circle Progress / Linear progress */}
-            <div className="bg-[#120a2c]/30 rounded-2xl p-4 border border-white/5 space-y-3">
-              <div className="flex justify-between items-center text-xs font-bold">
-                <span className="text-gray-400">Прогресс занятий:</span>
-                <span className="text-purple-400">{completedLessons} / {totalLessons} уроков ({progressPercentage}%)</span>
-              </div>
-              <ProgressBar 
-                current={completedLessons} 
-                max={totalLessons} 
-                colorClass="bg-purple-500 h-2" 
-              />
-            </div>
-
-            {/* Scannable Lessons list with interactive triggers */}
-            <div className="space-y-2.5 max-h-[220px] overflow-y-auto no-scrollbar pr-1">
-              {lessons.map((lesson: Lesson) => {
-                const isCompleted = lesson.isCompleted;
-                
-                return (
-                  <div 
-                    key={lesson.id} 
-                    onClick={() => {
-                      if (!lesson.isLocked || user.role === 'admin' || user.role === 'super_admin') {
-                        setActiveLesson(lesson.id);
-                      }
-                    }}
-                    className={`flex items-center justify-between p-3 rounded-xl text-xs font-bold border transition-all cursor-pointer 
-                      ${isCompleted 
-                        ? 'bg-purple-950/10 border-purple-500/20 text-white' 
-                        : 'bg-[#120a2c]/40 border-white/5 text-gray-400 hover:text-white hover:border-white/10'
-                      }`}
+                <h3 className="text-sm font-bold text-gray-400 mb-1">Личные данные</h3>
+                <p className="text-2xl font-black text-white">{user.name}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider
+                    ${user.role === 'super_admin' || user.role === 'admin' ? 'bg-teal-950/40 text-teal-400 border border-teal-500/30' : ''}
+                    ${user.role === 'support' ? 'bg-blue-900/40 text-blue-400 border border-blue-500/30' : ''}
+                    ${(user.role === 'participant' || user.role === 'student') ? 'bg-teal-950/40 text-teal-400 border border-teal-500/30' : ''}
+                    ${user.role === 'user' ? 'bg-gray-800/40 text-gray-400 border border-gray-700' : ''}`}
                   >
-                    <div className="flex items-center gap-3">
-                      {isCompleted ? (
-                        <div className="w-5 h-5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center font-black">
-                          ✓
-                        </div>
-                      ) : (
-                        <div className="w-5 h-5 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-medium text-[10px]">
-                          {lesson.blockId || '•'}
-                        </div>
-                      )}
-                      
-                      <span className="truncate max-w-[280px]">{lesson.title}</span>
-                    </div>
+                    {getRoleLabelRu(user.role)}
+                  </span>
+                  {user.subRole && user.subRole !== 'none' && (
+                    <span className="px-2 py-1 bg-[#120a2c] text-teal-400 border border-teal-500/20 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                      {user.subRole}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-gray-500 font-mono">{lesson.durationMinutes} мин</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-gray-600" />
-                    </div>
+              <div>
+                <h3 className="text-sm font-bold text-gray-400 mb-2">Контактная информация</h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 flex justify-center"><UserIcon className="w-4 h-4 text-gray-500" /></div>
+                    <span>{user.email}</span>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 flex justify-center"><Phone className="w-4 h-4 text-gray-500" /></div>
+                    <span>+7 (***) ***-**-** <span className="text-[10px] text-gray-500 uppercase font-bold ml-1 border border-white/10 px-1 py-0.5 rounded">Скрыт</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Локализация и Активность */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-gray-400 mb-2">Локализация</h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 flex justify-center"><MapPin className="w-4 h-4 text-gray-500" /></div>
+                    <span>Россия, Москва</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 flex justify-center"><Clock className="w-4 h-4 text-gray-500" /></div>
+                    <span>Часовой пояс: UTC+3 (МСК)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 flex justify-center"><Globe className="w-4 h-4 text-gray-500" /></div>
+                    <span>Язык интерфейса: Русский</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-bold text-gray-400 mb-2">Активность</h3>
+                <div className="flex flex-col sm:flex-row gap-4 text-sm text-gray-300">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-teal-400" />
+                    В клубе с {joinedDateStr}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Flame className="w-4 h-4 text-indigo-500" />
+                    Серия: {user.streak} дн.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* PRODUCTS & MEMBERSHIPS (Column 2) */}
-        <div className="glass-card p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <span className="text-[10px] font-black tracking-widest text-[#f59e0b] uppercase">ПРОДУКТЫ ИЛИ РЕСУРСЫ</span>
-                <h3 className="text-xl font-black text-white mt-1">Купленные программы</h3>
-              </div>
-              <Award className="w-6 h-6 text-[#f59e0b]" />
-            </div>
+      {/* 2. ФИНАНСОВАЯ ИНФОРМАЦИЯ И ПОКУПКИ */}
+      <div className="glass-card p-6 md:p-8 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-6">
+          <CreditCard className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-xl font-black uppercase tracking-tight text-white">Финансовая информация</h2>
+        </div>
 
-            {/* List of purchased items */}
-            <div className="space-y-3 max-h-[300px] overflow-y-auto no-scrollbar pr-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Подписки и Приобретенные продукты */}
+          <div>
+            <h3 className="text-sm font-bold text-gray-400 mb-4 flex items-center gap-2">
+              <Award className="w-4 h-4" /> Текущие подписки и продукты
+            </h3>
+            <div className="space-y-3 max-h-[250px] overflow-y-auto no-scrollbar pr-1">
               {ownedProducts.map((p: Product) => (
-                <div key={p.id} className="bg-yellow-500/5 border border-yellow-500/10 rounded-xl p-4 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-bold text-sm text-yellow-500 leading-tight">{p.title}</h4>
-                      <span className="text-[9px] text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase font-mono tracking-wider mt-1.5 inline-block">
-                        {p.type}
-                      </span>
-                    </div>
-                    <span className="text-xs font-black text-gray-300 bg-[#120a2c] px-2.5 py-1 rounded-lg border border-yellow-500/20">
+                <div key={p.id} className="bg-teal-500/5 border border-teal-500/10 rounded-xl p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-bold text-sm text-teal-400 leading-tight pr-4">{p.title}</h4>
+                    <span className="text-[10px] font-black text-white bg-teal-500/20 px-2.5 py-1 rounded border border-teal-500/30 shrink-0">
                       АКТИВЕН
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
-                    {p.description}
-                  </p>
+                  <div className="flex items-center gap-4 text-[11px] text-gray-400 font-medium">
+                    <span>Тип: <span className="uppercase text-gray-300">{p.type}</span></span>
+                    <span>До: <span className="text-gray-300">Бессрочно</span></span>
+                  </div>
                 </div>
               ))}
 
               {ownedProducts.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-10 border border-dashed border-white/10 rounded-2xl text-center space-y-4">
-                  <Lock className="w-8 h-8 text-gray-500" />
-                  <div className="space-y-1">
-                    <p className="font-bold text-xs text-gray-400">Нет приобретенных продуктов</p>
-                    <p className="text-[10px] text-gray-500 max-w-xs leading-normal">
-                      Получите или приобретите терапевтическую программу в магазине ресурсов для получения полного доступа.
-                    </p>
+                <div className="flex flex-col items-center justify-center py-8 border border-dashed border-white/10 rounded-xl text-center space-y-3">
+                  <Lock className="w-6 h-6 text-gray-500" />
+                  <div>
+                    <p className="font-bold text-xs text-gray-400">Нет активных продуктов</p>
+                    <p className="text-[10px] text-gray-500 mt-1">Оформите подписку или купите программу</p>
                   </div>
                   <button 
                     onClick={() => setView(ViewState.SERVICES)}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-bold uppercase tracking-wider rounded-lg transition-all"
+                    className="mt-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 text-xs font-bold uppercase tracking-wider rounded-lg transition-all"
                   >
-                    Перейти в Ресурсы
+                    Перейти в магазин
                   </button>
                 </div>
               )}
             </div>
           </div>
-        </div>
 
-      </div>
-
-      {/* BADGES & ACCOMPLISHMENTS VIEW */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Star className="w-5 h-5 text-purple-400" />
-          <h2 className="text-xl font-black uppercase tracking-tight text-white">Достижения и значки</h2>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {badges.map((badge: Badge) => (
-            <div 
-              key={badge.id} 
-              className={`
-                p-5 rounded-2xl border flex flex-col items-center text-center transition-all duration-300 relative overflow-hidden group
-                ${badge.unlocked 
-                  ? 'bg-[#120a2c]/50 border-purple-500/20 shadow-[0_4px_20px_rgba(168,85,247,0.05)] hover:border-purple-500/40' 
-                  : 'bg-[#120a2c]/20 border-white/5 opacity-50 grayscale'
-                }
-              `}
-            >
-              {badge.unlocked && (
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              )}
-              <div className={`text-4xl mb-3 transform transition-transform group-hover:scale-110 duration-300 ${badge.unlocked ? 'animate-pulse-slow' : ''}`}>
-                {badge.icon}
-              </div>
-              <h3 className="font-bold text-white text-sm mb-1">{badge.name}</h3>
-              <p className="text-[11px] text-gray-400 leading-normal mb-2">{badge.description}</p>
-              {badge.unlocked ? (
-                <span className="mt-auto text-[9px] uppercase font-black text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20 tracking-wider">
-                  Получено
-                </span>
-              ) : (
-                <span className="mt-auto text-[9px] uppercase font-bold text-gray-500 bg-white/5 px-2.5 py-1 rounded-full tracking-wider">
-                  Заблокирован
-                </span>
-              )}
+          {/* История транзакций */}
+          <div>
+            <h3 className="text-sm font-bold text-gray-400 mb-4 flex items-center gap-2">
+              <Receipt className="w-4 h-4" /> История транзакций
+            </h3>
+            <div className="space-y-3 max-h-[250px] overflow-y-auto no-scrollbar pr-1">
+              {[
+                { id: 'T-10042', date: '12 Апр 2026', amount: '12 500 ₽', status: 'Успешно', desc: 'Курс "ИммуноБаланс"' },
+                { id: 'T-10021', date: '01 Мар 2026', amount: '2 900 ₽', status: 'Успешно', desc: 'Терапевтический блок' }
+              ].map((tx, idx) => (
+                <div key={idx} className="bg-[#120a2c]/50 border border-white/5 rounded-xl p-4 flex justify-between items-center transition-all hover:bg-white/5">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold text-gray-300">{tx.desc}</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20">{tx.status}</span>
+                    </div>
+                    <div className="text-[10px] text-gray-500 font-mono">Чек: {tx.id} • {tx.date}</div>
+                  </div>
+                  <div className="text-sm font-black text-white">{tx.amount}</div>
+                </div>
+              ))}
+              <button className="w-full py-3 border border-dashed border-white/10 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:border-white/20 transition-all focus:outline-none">
+                Смотреть все транзакции
+              </button>
             </div>
-          ))}
+          </div>
         </div>
       </div>
+
+      {/* 3. НАСТРОЙКИ ПЛАТФОРМЫ */}
+      <div className="glass-card p-6 md:p-8 relative overflow-hidden">
+        <div className="flex items-center gap-2 mb-6">
+          <Shield className="w-5 h-5 text-gray-300" />
+          <h2 className="text-xl font-black uppercase tracking-tight text-white">Настройки платформы</h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Уведомления */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-gray-400 border-b border-white/10 pb-2 flex items-center gap-2">
+              <Bell className="w-4 h-4" /> Уведомления
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-300">Push-уведомления</h4>
+                  <p className="text-[10px] text-gray-500">Напоминания о дедлайнах и новых уроках в браузере</p>
+                </div>
+                <button 
+                  onClick={() => setNotifications({ ...notifications, push: !notifications.push })}
+                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${notifications.push ? 'bg-teal-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`w-4 h-4 bg-white rounded-full transition-transform absolute ${notifications.push ? 'translate-x-7' : 'translate-x-1'}`}></div>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-300">Email-рассылки</h4>
+                  <p className="text-[10px] text-gray-500">Ответы куратора, новости экосистемы, чеки покупок</p>
+                </div>
+                <button 
+                  onClick={() => setNotifications({ ...notifications, email: !notifications.email })}
+                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${notifications.email ? 'bg-teal-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`w-4 h-4 bg-white rounded-full transition-transform absolute ${notifications.email ? 'translate-x-7' : 'translate-x-1'}`}></div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Безопасность */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-gray-400 border-b border-white/10 pb-2 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> Безопасность
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-300 flex items-center gap-1.5"><Key className="w-3.5 h-3.5 text-gray-400"/> Смена пароля</h4>
+                  <p className="text-[10px] text-gray-500">Последнее обновление: 2 месяца назад</p>
+                </div>
+                <button className="px-3 py-1.5 border border-white/10 hover:border-white/20 rounded-lg text-xs font-bold text-gray-300 hover:text-white transition-colors">
+                  Обновить
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-gray-300 flex items-center gap-1.5"><Smartphone className="w-3.5 h-3.5 text-gray-400"/> Двухфакторная аутентификация (2FA)</h4>
+                  <p className="text-[10px] text-gray-500">Дополнительная защита при входе через SMS/Telegram</p>
+                </div>
+                <button 
+                  onClick={() => setTwoFactor(!twoFactor)}
+                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${twoFactor ? 'bg-teal-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`w-4 h-4 bg-white rounded-full transition-transform absolute ${twoFactor ? 'translate-x-7' : 'translate-x-1'}`}></div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL FOR AVATAR EDITING */}
+      {editingAvatarImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070311]/80 backdrop-blur-sm">
+          <div className="bg-[#120a2c] border border-teal-500/30 rounded-2xl p-6 w-full max-w-sm flex flex-col items-center relative shadow-2xl">
+            <button 
+              onClick={() => setEditingAvatarImage(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-lg font-black text-white mb-6 uppercase tracking-wider">Настройка фото</h3>
+            
+            <div className="rounded-xl overflow-hidden mb-6 border border-white/10 bg-[#070311]">
+              <AvatarEditor
+                ref={editorRef}
+                image={editingAvatarImage}
+                width={200}
+                height={200}
+                border={30}
+                color={[7, 3, 17, 0.6]} // #070311 with 60% opacity
+                scale={avatarScale}
+                rotate={0}
+                borderRadius={100} // make the crop area circular
+              />
+            </div>
+            
+            <div className="w-full space-y-2 mb-6">
+              <div className="flex justify-between text-xs text-gray-400 font-bold uppercase tracking-wider">
+                <span>Масштаб</span>
+                <span>{Math.round(avatarScale * 100)}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="3" 
+                step="0.05" 
+                value={avatarScale}
+                onChange={(e) => setAvatarScale(parseFloat(e.target.value))}
+                className="w-full translate-y-[-2px] accent-teal-500"
+              />
+            </div>
+
+            <div className="flex w-full gap-3">
+              <button 
+                onClick={() => setEditingAvatarImage(null)}
+                className="flex-1 py-3 bg-white/5 border border-white/10 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/10 transition-colors"
+              >
+                Отмена
+              </button>
+              <button 
+                onClick={handleSaveAvatar}
+                className="flex-1 py-3 bg-teal-600 border border-teal-500/20 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-teal-500 transition-colors shadow-[0_0_15px_rgba(20,184,166,0.3)]"
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
