@@ -71,15 +71,13 @@ export const Dashboard: React.FC = () => {
     <div className="space-y-10 animate-fade-in text-white pb-20">
       
       {/* HEADER SECTION */}
-      <div className="relative pt-6 pb-2 overflow-hidden">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+      <div className="relative pt-2 md:pt-6 pb-2 overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 relative z-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black text-white leading-[1.1] mb-1">
+            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight md:leading-[1.1] mb-1">
               Привет, <span className="meta-gradient-text">{user?.name.split(' ')[0]}</span>
             </h1>
           </div>
-          
-
         </div>
       </div>
 

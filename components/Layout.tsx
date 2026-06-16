@@ -1,21 +1,17 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from '../services/store';
 import { ViewState } from '../types';
-import { Menu, Home, BookOpen, Activity, MessageCircle, Award, AlertTriangle, X, LogOut, Stethoscope, Settings, Soup, Sparkles, Shield, TrendingUp, Users, Briefcase, FileText, Package } from 'lucide-react';
+import { Home, BookOpen, Activity, MessageCircle, Award, AlertTriangle, LogOut, Stethoscope, Soup, Shield, TrendingUp, Briefcase, FileText, Package, User } from 'lucide-react';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, view, setView, triggerEmergency, logout, updateUserRoleAndSubRole } = useStore();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const NavItem = ({ target, icon: Icon, label }: { target: ViewState, icon: any, label: string }) => {
     const isActive = view === target;
     return (
       <button 
-        onClick={() => {
-          setView(target);
-          setIsMobileMenuOpen(false);
-        }}
+        onClick={() => setView(target)}
         className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group outline-none
           ${isActive 
             ? 'bg-[#0ca3be]/10 text-[#0ca3be] border border-[#0ca3be]/20 shadow-[0_0_15px_rgba(12,163,190,0.15)]' 
@@ -66,11 +62,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   return (
     <div className="min-h-screen flex font-sans bg-[#f1f5f9] text-slate-800 selection:bg-[#0ca3be]/30">
       {/* Sidebar */}
-      <aside className={`
-        fixed md:sticky top-0 left-0 z-[70] h-screen w-72 bg-[#f0f4f8] border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}
-      `}>
-        <div className="p-8">
+      <aside className="hidden md:flex sticky top-0 left-0 z-[70] h-screen w-72 bg-[#f0f4f8] border-r border-slate-200 flex-col">
+        <div className="p-6 md:p-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 bg-[#0ca3be] rounded-[15px] flex items-center justify-center text-white shadow-lg shadow-[#0ca3be]/20 shrink-0">
               <span className="font-sans font-black text-2xl mb-0.5">Н</span>
@@ -161,15 +154,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="nebula w-[600px] h-[600px] bg-cyan-200/40 rounded-full blur-[100px] absolute top-[30%] right-[20%] animate-meta-float" style={{animationDelay: '-10s'}}></div>
         </div>
 
-        <header className="bg-white/40 backdrop-blur-md border-b border-white/50 py-4 px-6 md:px-10 flex items-center justify-between sticky top-0 z-50">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden text-slate-600 p-2 hover:bg-slate-100 rounded-lg">
-              <Menu className="w-6 h-6" />
-            </button>
-            <h1 className="text-xl font-bold text-slate-800 uppercase tracking-widest">{getHeaderTitle()}</h1>
+        <header className="bg-white/40 backdrop-blur-md border-b border-white/50 py-3 px-4 md:py-4 md:px-10 flex items-center justify-between sticky top-0 z-50">
+          <div className="flex items-center gap-2 md:gap-4">
+            <h1 className="text-lg md:text-xl font-bold text-slate-800 uppercase tracking-widest shrink-0">{getHeaderTitle()}</h1>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 md:gap-6">
             <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-full border border-slate-200 shadow-sm">
                <span className="text-xs font-black text-[#0ca3be]">{user.xp} <span className="text-slate-400">XP</span></span>
                <div className="w-px h-3 bg-slate-300"></div>
@@ -177,26 +167,35 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </div>
             <button 
               onClick={triggerEmergency}
-              className="bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 px-5 py-2 rounded-full text-[10px] font-black tracking-[0.2em] transition-all hover:shadow-md"
+              className="bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 px-3 md:px-5 py-1.5 md:py-2 rounded-full text-[10px] sm:text-xs font-black tracking-[0.1em] md:tracking-[0.2em] transition-all hover:shadow-md shrink-0 flex items-center gap-1"
             >
-              SOS ПОМОЩЬ
+              <AlertTriangle className="w-3 h-3 md:hidden" />
+              <span className="hidden sm:inline">SOS ПОМОЩЬ</span>
+              <span className="sm:hidden">SOS</span>
             </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 pb-32 no-scrollbar bg-transparent">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 pb-32 no-scrollbar bg-transparent">
           <div className="max-w-6xl mx-auto">
             {children}
           </div>
         </div>
 
         {/* Mobile Nav */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-3xl border-t border-slate-200 flex items-center justify-around px-2 pb-safe-area-inset-bottom h-[76px] z-[60] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <nav 
+          className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-3xl border-t border-slate-200 flex items-center justify-around px-2 z-[60] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)', height: 'calc(68px + env(safe-area-inset-bottom))' }}
+        >
           <MobileTab target={ViewState.DASHBOARD} icon={Home} label="КАБИНЕТ" />
           <MobileTab target={ViewState.LESSONS} icon={BookOpen} label="УРОКИ" />
-          <MobileTab target={ViewState.AI_CHAT} icon={MessageCircle} label="МЕТА" />
           <MobileTab target={ViewState.DIARY} icon={Activity} label="ДНЕВНИК" />
-          <MobileTab target={ViewState.PROFILE} icon={Award} label="МАСТЕР" />
+          <MobileTab target={ViewState.PROGRESS} icon={TrendingUp} label="ПРОГРЕСС" />
+          {user?.role === 'super_admin' ? (
+            <MobileTab target={ViewState.ADMIN} icon={Shield} label="АДМИН" />
+          ) : (
+            <MobileTab target={ViewState.PROFILE} icon={User} label="ПРОФИЛЬ" />
+          )}
         </nav>
       </main>
     </div>

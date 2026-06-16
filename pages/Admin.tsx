@@ -1,11 +1,12 @@
 import React from 'react';
 import { useStore } from '../services/store';
+import { ViewState } from '../types';
 import { 
-  Shield, Settings, Users, Activity
+  Shield, Settings, Users, Activity, Briefcase, FileText, Package
 } from 'lucide-react';
 
 export const Admin: React.FC = () => {
-  const { user: currentUser, usersList, orders } = useStore();
+  const { user: currentUser, usersList, orders, setView } = useStore();
 
   if (!currentUser) return null;
 
@@ -26,6 +27,24 @@ export const Admin: React.FC = () => {
             Общая сводка системы
           </p>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <button onClick={() => setView(ViewState.ADMIN_CRM)} className="bg-blue-900/20 hover:bg-blue-900/40 border border-blue-500/30 p-6 rounded-2xl text-left transition-all group">
+          <Briefcase className="w-8 h-8 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
+          <h3 className="text-xl font-bold mb-2">CRM Система</h3>
+          <p className="text-sm text-gray-400">Управление базой пользователей, заказами и финансами</p>
+        </button>
+        <button onClick={() => setView(ViewState.ADMIN_CONTENT)} className="bg-emerald-900/20 hover:bg-emerald-900/40 border border-emerald-500/30 p-6 rounded-2xl text-left transition-all group">
+          <FileText className="w-8 h-8 text-emerald-400 mb-4 group-hover:scale-110 transition-transform" />
+          <h3 className="text-xl font-bold mb-2">Контент Академии</h3>
+          <p className="text-sm text-gray-400">Управление уроками, заданиями, расписанием и материалами курса</p>
+        </button>
+        <button onClick={() => setView(ViewState.ADMIN_PRODUCTS)} className="bg-orange-900/20 hover:bg-orange-900/40 border border-orange-500/30 p-6 rounded-2xl text-left transition-all group">
+          <Package className="w-8 h-8 text-orange-400 mb-4 group-hover:scale-110 transition-transform" />
+          <h3 className="text-xl font-bold mb-2">Витрина Продуктов</h3>
+          <p className="text-sm text-gray-400">Создание и настройка тарифов, доступов и офферов</p>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -52,9 +71,8 @@ export const Admin: React.FC = () => {
 
       <div className="bg-purple-900/20 border border-purple-500/20 p-8 rounded-2xl text-center">
         <Settings className="w-12 h-12 text-purple-400 mx-auto mb-4 opacity-50" />
-        <h3 className="text-xl font-bold mb-2">Настройки Платформы</h3>
-        <p className="text-gray-400">Глобальные настройки системы отключены в режиме предварительного просмотра.</p>
-        <p className="text-sm text-purple-300 mt-4">Используйте блок CRM для работы с базой и финансами.</p>
+        <h3 className="text-xl font-bold mb-2">Глобальные настройки</h3>
+        <p className="text-gray-400">Глобальные системные конфигурации отключены в режиме предварительного просмотра.</p>
       </div>
     </div>
   );

@@ -79,7 +79,7 @@ export const LessonView: React.FC = () => {
         </div>
 
         {/* 8-WEEK CALENDAR / SCHEDULE SELECTION TABS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="flex sm:grid sm:grid-cols-2 xl:grid-cols-4 gap-3 overflow-x-auto pb-4 sm:pb-0 snap-x no-scrollbar -mx-6 px-6 sm:mx-0 sm:px-0">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((week) => {
             const isSelected = selectedWeek === week;
             const isUserWeek = userCurrentWeek === week;
@@ -89,7 +89,7 @@ export const LessonView: React.FC = () => {
               <button
                 key={week}
                 onClick={() => { if (!isLocked) setSelectedWeek(week); }}
-                className={`p-4 rounded-2xl border transition-all relative overflow-hidden group select-none text-left
+                className={`min-w-[240px] sm:min-w-0 p-4 rounded-2xl border transition-all relative overflow-hidden group select-none text-left shrink-0 snap-center
                   ${isSelected 
                     ? 'bg-teal-950/20 border-teal-500/50 shadow-[0_4px_25px_rgba(20,184,166,0.1)]' 
                     : isLocked
