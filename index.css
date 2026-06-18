@@ -85,8 +85,8 @@ body {
 
 /* Prevent text inversion on components that MUST have white text */
 button.bg-gradient-to-r,
-button.bg-[#0ca3be],
-button.bg-[#14b8a6],
+button.bg-\[\#0ca3be\],
+button.bg-\[\#14b8a6\],
 button[class*="bg-teal-500"],
 button[class*="bg-emerald-600"],
 .bg-gradient-to-r.text-white,
@@ -103,7 +103,7 @@ button.text-white,
 .text-white.font-black.uppercase,
 span.text-white.font-black,
 .bg-gradient-to-r span,
-.bg-[#0ca3be] span {
+.bg-\[\#0ca3be\] span {
   color: inherit;
 }
 
